@@ -13,3 +13,11 @@ class Task(_message.Message):
     task_id: int
     payload: _containers.RepeatedCompositeFieldContainer[_any_pb2.Any]
     def __init__(self, task_id: _Optional[int] = ..., payload: _Optional[_Iterable[_Union[_any_pb2.Any, _Mapping]]] = ...) -> None: ...
+
+class ServiceIPWithPort(_message.Message):
+    __slots__ = ("ip", "port")
+    IP_FIELD_NUMBER: _ClassVar[int]
+    PORT_FIELD_NUMBER: _ClassVar[int]
+    ip: str
+    port: int
+    def __init__(self, ip: _Optional[str] = ..., port: _Optional[int] = ...) -> None: ...
