@@ -25,7 +25,7 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import any_pb2 as google_dot_protobuf_dot_any__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0c\x63ommon.proto\x12\x08services\x1a\x19google/protobuf/any.proto\">\n\x04Task\x12\x0f\n\x07task_id\x18\x01 \x01(\r\x12%\n\x07payload\x18\x02 \x03(\x0b\x32\x14.google.protobuf.Anyb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0c\x63ommon.proto\x12\x08services\x1a\x19google/protobuf/any.proto\">\n\x04Task\x12\x0f\n\x07task_id\x18\x01 \x01(\r\x12%\n\x07payload\x18\x02 \x03(\x0b\x32\x14.google.protobuf.Any\"-\n\x11ServiceIPWithPort\x12\n\n\x02ip\x18\x01 \x01(\t\x12\x0c\n\x04port\x18\x02 \x01(\rb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -34,4 +34,6 @@ if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
   _globals['_TASK']._serialized_start=53
   _globals['_TASK']._serialized_end=115
+  _globals['_SERVICEIPWITHPORT']._serialized_start=117
+  _globals['_SERVICEIPWITHPORT']._serialized_end=162
 # @@protoc_insertion_point(module_scope)
