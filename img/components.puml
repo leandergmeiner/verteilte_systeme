@@ -1,0 +1,23 @@
+@startuml Components
+[Client]
+[Dispatcher]
+[Worker]
+[Name Service]
+[Monitoring Service]
+
+skinparam linetype polyline
+skinparam linetype ortho
+
+[Client] --> [Dispatcher]
+[Client] --> [Dispatcher]
+[Dispatcher] --> [Client]
+
+[Worker] --> [Dispatcher]
+[Dispatcher] --> [Worker]
+
+[Worker] --> [Name Service]
+
+[Dispatcher] --> [Name Service]
+
+[Dispatcher] --> [Monitoring Service]
+@enduml
