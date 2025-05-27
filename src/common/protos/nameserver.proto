@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+import "googleapis/google/rpc/status.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+package services;
+
+message Service {
+    string type = 1;
+    string ip = 2;
+}
+
+service NameService {
+    // SERVICE -> NAME_SERVICE: Register service
+    rpc register(Service) returns (google.rpc.Status) {}
+    // SERVICE -> NAME_SERVICE: Unregister service
+    rpc unregister(Service) returns (google.protobuf.Empty) {}
+    // DISPATCHER -> NAME_SERVICE: get ip of service by name
+    rpc lookup(google.protobuf.StringValue) returns (google.protobuf.StringValue) {}
+}

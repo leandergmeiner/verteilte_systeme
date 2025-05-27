@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+import "googleapis/google/rpc/status.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/empty.proto";
+
+import "common.proto";
+
+package services;
+
+message WorkerStatus {
+    uint32 id = 1;
+    optional string message = 2;
+    repeated google.protobuf.Any details = 3;
+}
+
+service Worker {
+    // DISPATCHER -> WORKER: Queue a new task for processing on the worker
+    rpc process_task(services.Task) returns (google.rpc.Status) {}
+    // Any -> WORKER: Query the status of the worker
+    rpc get_status(google.protobuf.Empty) returns (WorkerStatus) {}
+}
