@@ -1,0 +1,27 @@
+@startuml Task
+participant     "Client"
+participant     "Dispatcher"
+participant     "Name Service"
+participant     "Worker"
+
+skinparam sequenceMessageAlign left
+skinparam ResponseMessageBelowArrow true
+
+== Send Task ==
+Client -[#red]> Dispatcher: send task and payload
+activate Dispatcher #FFBBBB
+Client <[#red]- Dispatcher: respond with task id
+
+Dispatcher -[#blue]> "Name Service": lookup worker
+Dispatcher <[#blue]- "Name Service": respond with available worker
+Dispatcher -[#green]> Worker: dispatch task
+activate Worker #A7D1AA
+|||
+Dispatcher <[#green]- Worker: send result
+deactivate Worker
+
+== Fetch Responses ==
+Client -[#violet]> Dispatcher: get result from task id
+Client <[#violet]- Dispatcher: respond with result
+deactivate Dispatcher
+@enduml
