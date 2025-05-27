@@ -3,9 +3,9 @@
 import grpc
 import warnings
 
+import common_pb2 as common__pb2
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb2
-from googleapis.google.rpc import status_pb2 as googleapis_dot_google_dot_rpc_dot_status__pb2
 import nameserver_pb2 as nameserver__pb2
 
 GRPC_GENERATED_VERSION = '1.71.0'
@@ -40,7 +40,7 @@ class NameServiceStub(object):
         self.register = channel.unary_unary(
                 '/services.NameService/register',
                 request_serializer=nameserver__pb2.Service.SerializeToString,
-                response_deserializer=googleapis_dot_google_dot_rpc_dot_status__pb2.Status.FromString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 _registered_method=True)
         self.unregister = channel.unary_unary(
                 '/services.NameService/unregister',
@@ -50,7 +50,7 @@ class NameServiceStub(object):
         self.lookup = channel.unary_unary(
                 '/services.NameService/lookup',
                 request_serializer=google_dot_protobuf_dot_wrappers__pb2.StringValue.SerializeToString,
-                response_deserializer=google_dot_protobuf_dot_wrappers__pb2.StringValue.FromString,
+                response_deserializer=common__pb2.ServiceIPWithPort.FromString,
                 _registered_method=True)
 
 
@@ -84,7 +84,7 @@ def add_NameServiceServicer_to_server(servicer, server):
             'register': grpc.unary_unary_rpc_method_handler(
                     servicer.register,
                     request_deserializer=nameserver__pb2.Service.FromString,
-                    response_serializer=googleapis_dot_google_dot_rpc_dot_status__pb2.Status.SerializeToString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
             'unregister': grpc.unary_unary_rpc_method_handler(
                     servicer.unregister,
@@ -94,7 +94,7 @@ def add_NameServiceServicer_to_server(servicer, server):
             'lookup': grpc.unary_unary_rpc_method_handler(
                     servicer.lookup,
                     request_deserializer=google_dot_protobuf_dot_wrappers__pb2.StringValue.FromString,
-                    response_serializer=google_dot_protobuf_dot_wrappers__pb2.StringValue.SerializeToString,
+                    response_serializer=common__pb2.ServiceIPWithPort.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -123,7 +123,7 @@ class NameService(object):
             target,
             '/services.NameService/register',
             nameserver__pb2.Service.SerializeToString,
-            googleapis_dot_google_dot_rpc_dot_status__pb2.Status.FromString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options,
             channel_credentials,
             insecure,
@@ -177,7 +177,7 @@ class NameService(object):
             target,
             '/services.NameService/lookup',
             google_dot_protobuf_dot_wrappers__pb2.StringValue.SerializeToString,
-            google_dot_protobuf_dot_wrappers__pb2.StringValue.FromString,
+            common__pb2.ServiceIPWithPort.FromString,
             options,
             channel_credentials,
             insecure,
