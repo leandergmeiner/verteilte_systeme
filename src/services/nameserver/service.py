@@ -70,8 +70,12 @@ class NameServiceServicer(nameserver_pb2_grpc.NameServiceServicer):
                     status_pb2.Status(code=code_pb2.INVALID_ARGUMENT, message=msg)
                 )
             )
-            
-        logger.info("The service worker %s with the type %s has been registered.", str(ip) + str(port), name)
+
+        logger.info(
+            "The service worker %s with the type %s has been registered.",
+            str(ip) + str(port),
+            name,
+        )
 
         logger.info(
             "The service worker %s with the type %s has been registered.",
