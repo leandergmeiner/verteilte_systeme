@@ -1,11 +1,13 @@
-from src.common.rpc.services import nameserver_pb2_grpc
-from src.common.rpc.types import nameserver_pb2, common_pb2
+from src.common.rpc import nameserver_pb2_grpc
+from src.common.rpc import nameserver_pb2, common_pb2
 import grpc
 from grpc_status import rpc_status
 import ipaddress
 from google.protobuf import wrappers_pb2
 from google.rpc import status_pb2
+import logging
 
+logger = logging.getLogger()
 
 class NameServiceServicer(nameserver_pb2_grpc.NameServiceServicer):
     def __init__(self):
@@ -61,6 +63,8 @@ class NameServiceServicer(nameserver_pb2_grpc.NameServiceServicer):
                     status_pb2.Status(grpc.StatusCode.INVALID_ARGUMENT, msg)
                 )
             )
+            
+        logger.info("The service worker %s with the type %s has been registered.", str(ip) + str(port), name)
 
         self.name_address_lookup[name] = address
 
@@ -72,6 +76,7 @@ class NameServiceServicer(nameserver_pb2_grpc.NameServiceServicer):
         # Fail silently if service is unknown
         if name in self.name_address_lookup:
             del self.name_address_lookup[name]
+            logger.info("Unregistered service worker of type %s.", name)
 
     def lookup(self, request: wrappers_pb2.StringValue, context: grpc.ServicerContext):
         name = request.value
@@ -80,6 +85,8 @@ class NameServiceServicer(nameserver_pb2_grpc.NameServiceServicer):
             context.abort_with_status(
                 rpc_status.to_status(status_pb2.Status(grpc.StatusCode.NOT_FOUND, msg))
             )
+
+        logger.info("The address for the service worker of type %s has been requested.", name)
 
         ip, port = self.name_address_lookup[name]
         return common_pb2.ServiceIPWithPort(ip, port)

@@ -1,6 +1,5 @@
 syntax = "proto3";
 
-import "googleapis/google/rpc/status.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/wrappers.proto";
 
