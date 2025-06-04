@@ -3,7 +3,7 @@ from queue import SimpleQueue
 
 import grpc
 from google.protobuf import any_pb2, empty_pb2, wrappers_pb2
-from google.rpc import status_pb2
+from google.rpc import status_pb2, code_pb2
 from grpc_status import rpc_status
 
 from src.common.rpc import (
@@ -23,7 +23,7 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
         self.name_service_address = name_service_address
 
         logging.info(
-            "Dispacher startet. Name server address is %s", self.name_service_address
+            "Dispacher started. Name server address is %s", self.name_service_address
         )
 
         self._next_task_id = 0
@@ -36,7 +36,7 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
         """CLIENT -> DISPATCHER: Client requests execution of task"""
         # TODO: store_result
         task_id = self.next_task_id()
-        task = common_pb2.Task(task_id, request.payload)
+        task = common_pb2.Task(task_id=task_id, payload=request.payload)
 
         status, address = self.lookup_worker(request.type)
         if status.code != grpc.StatusCode.OK:
@@ -52,7 +52,7 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
 
         status = self.dispatch_task_to_worker(address, task)
 
-        if status.code != grpc.StatusCode.OK:
+        if status.code != code_pb2.OK:
             context.abort_with_status(rpc_status.to_status(status))
 
         return empty_pb2.Empty()
@@ -66,7 +66,9 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
         if task_id not in self.results:
             context.abort_with_status(
                 rpc_status.to_status(
-                    status_pb2.Status(grpc.StatusCode.NOT_FOUND, "UNKNOWN_TASK_ID")
+                    status_pb2.Status(
+                        code=code_pb2.NOT_FOUND, message="UNKNOWN_TASK_ID"
+                    )
                 )
             )
 
@@ -78,7 +80,7 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
     def return_result(self, request: common_pb2.Task, context: grpc.ServicerContext):
         """WORKER -> DISPATCH: Returns result of computation"""
         status = self.store_result(request)
-        if status.code != grpc.StatusCode.OK:
+        if status.code != code_pb2.OK:
             context.abort_with_status(rpc_status.to_status(status))
 
         logger.info("A worker returned the result of task %i.", request.task_id)
@@ -94,11 +96,13 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
                 stub = worker_pb2_grpc.WorkerStub(channel)
                 stub.receive_task(task)
 
-                return status_pb2.Status(grpc.StatusCode.OK)
+                return status_pb2.Status(code=code_pb2.OK)
             except grpc.RpcError as e:
-                return e.status()
+                return status_pb2.Status(
+                    code=e.status(), message="WORKER_RECEIVE_TASK_FAILED"
+                )
             except Exception:
-                return status_pb2.Status(grpc.StatusCode.UNKNOWN)
+                return status_pb2.Status(code=code_pb2.UNKNOWN)
 
     def lookup_worker(
         self, type: str
@@ -108,18 +112,20 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
                 stub = nameserver_pb2_grpc.NameServiceStub(channel)
                 address: common_pb2.ServiceIPWithPort = stub.lookup(type)
 
-                return status_pb2.Status(grpc.StatusCode.OK), address
+                return status_pb2.Status(code=code_pb2.OK), address
             except grpc.RpcError as e:
-                return e.status(), None
+                return status_pb2.Status(
+                    code=e.status(), message="WORKER_LOOKUP_FAILED"
+                )
 
     def store_result(self, task_result: common_pb2.Task) -> status_pb2.Status:
         if task_result.task_id in self.results:
             return status_pb2.Status(
-                grpc.StatusCode.ALREADY_EXISTS, "RESULT_ALREADY_RECEIVED"
+                code=code_pb2.ALREADY_EXISTS, message="RESULT_ALREADY_RECEIVED"
             )
 
         self.results[task_result.task_id] = task_result.payload
-        return status_pb2.Status(grpc.StatusCode.OK)
+        return status_pb2.Status(code=code_pb2.OK)
 
     def next_task_id(self) -> int:
         self._next_task_id += 1
