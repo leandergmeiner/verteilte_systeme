@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-import "googleapis/google/rpc/status.proto";
 import "google/protobuf/any.proto";
 import "google/protobuf/wrappers.proto";
+import "google/protobuf/empty.proto";
 
 import "common.proto";
 
@@ -10,9 +10,9 @@ package services;
 
 service Dispatch {
     // CLIENT -> DISPATCHER: Client requests execution of task
-    rpc execute(services.ExecuteTaskRequest) returns (google.rpc.Status) {}
+    rpc execute(services.ExecuteTaskRequest) returns (google.protobuf.Empty) {}
     // CLIENT -> DISPATCHER: Client requests result from Dispatcher for task
     rpc get_task_result(google.protobuf.UInt32Value) returns (google.protobuf.Any) {}
     // WORKER -> DISPATCH: Returns result of computation
-    rpc return_result(services.Task) returns (google.rpc.Status) {}
+    rpc return_result(services.TaskResult) returns (google.protobuf.Empty) {}
 }
