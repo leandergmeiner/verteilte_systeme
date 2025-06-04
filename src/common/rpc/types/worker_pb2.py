@@ -28,7 +28,7 @@ from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 import common_pb2 as common__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0cworker.proto\x12\x08services\x1a\"googleapis/google/rpc/status.proto\x1a\x19google/protobuf/any.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x0c\x63ommon.proto\"c\n\x0cWorkerStatus\x12\n\n\x02id\x18\x01 \x01(\r\x12\x14\n\x07message\x18\x02 \x01(\tH\x00\x88\x01\x01\x12%\n\x07\x64\x65tails\x18\x03 \x03(\x0b\x32\x14.google.protobuf.AnyB\n\n\x08_message2~\n\x06Worker\x12\x34\n\x0cprocess_task\x12\x0e.services.Task\x1a\x12.google.rpc.Status\"\x00\x12>\n\nget_status\x12\x16.google.protobuf.Empty\x1a\x16.services.WorkerStatus\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0cworker.proto\x12\x08services\x1a\"googleapis/google/rpc/status.proto\x1a\x19google/protobuf/any.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x0c\x63ommon.proto\"c\n\x0cWorkerStatus\x12\n\n\x02id\x18\x01 \x01(\r\x12\x14\n\x07message\x18\x02 \x01(\tH\x00\x88\x01\x01\x12%\n\x07\x64\x65tails\x18\x03 \x03(\x0b\x32\x14.google.protobuf.AnyB\n\n\x08_message2~\n\x06Worker\x12\x34\n\x0creceive_task\x12\x0e.services.Task\x1a\x12.google.rpc.Status\"\x00\x12>\n\nget_status\x12\x16.google.protobuf.Empty\x1a\x16.services.WorkerStatus\"\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)

@@ -37,8 +37,8 @@ class WorkerStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.process_task = channel.unary_unary(
-                '/services.Worker/process_task',
+        self.receive_task = channel.unary_unary(
+                '/services.Worker/receive_task',
                 request_serializer=common__pb2.Task.SerializeToString,
                 response_deserializer=googleapis_dot_google_dot_rpc_dot_status__pb2.Status.FromString,
                 _registered_method=True)
@@ -52,7 +52,7 @@ class WorkerStub(object):
 class WorkerServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def process_task(self, request, context):
+    def receive_task(self, request, context):
         """DISPATCHER -> WORKER: Queue a new task for processing on the worker
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -69,8 +69,8 @@ class WorkerServicer(object):
 
 def add_WorkerServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'process_task': grpc.unary_unary_rpc_method_handler(
-                    servicer.process_task,
+            'receive_task': grpc.unary_unary_rpc_method_handler(
+                    servicer.receive_task,
                     request_deserializer=common__pb2.Task.FromString,
                     response_serializer=googleapis_dot_google_dot_rpc_dot_status__pb2.Status.SerializeToString,
             ),
@@ -91,7 +91,7 @@ class Worker(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def process_task(request,
+    def receive_task(request,
             target,
             options=(),
             channel_credentials=None,
@@ -104,7 +104,7 @@ class Worker(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/services.Worker/process_task',
+            '/services.Worker/receive_task',
             common__pb2.Task.SerializeToString,
             googleapis_dot_google_dot_rpc_dot_status__pb2.Status.FromString,
             options,
