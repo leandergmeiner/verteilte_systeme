@@ -13,3 +13,8 @@ message ServiceIPWithPort {
     string ip = 1;
     uint32 port = 2;
 }
+
+message ExecuteTaskRequest {
+    string type = 1;
+    repeated google.protobuf.Any payload = 2;
+}

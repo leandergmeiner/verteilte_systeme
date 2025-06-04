@@ -8,14 +8,9 @@ import "common.proto";
 
 package services;
 
-message ExecuteTaskRequest {
-    string type = 1;
-    repeated google.protobuf.Any payload = 2;
-}
-
 service Dispatch {
     // CLIENT -> DISPATCHER: Client requests execution of task
-    rpc execute(ExecuteTaskRequest) returns (google.rpc.Status) {}
+    rpc execute(services.ExecuteTaskRequest) returns (google.rpc.Status) {}
     // CLIENT -> DISPATCHER: Client requests result from Dispatcher for task
     rpc get_task_result(google.protobuf.UInt32Value) returns (google.protobuf.Any) {}
     // WORKER -> DISPATCH: Returns result of computation

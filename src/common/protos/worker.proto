@@ -16,7 +16,7 @@ message WorkerStatus {
 
 service Worker {
     // DISPATCHER -> WORKER: Queue a new task for processing on the worker
-    rpc receive_task(services.Task) returns (google.rpc.Status) {}
+    rpc receive_task(services.ExecuteTaskRequest) returns (google.rpc.Status) {}
     // Any -> WORKER: Query the status of the worker
     rpc get_status(google.protobuf.Empty) returns (WorkerStatus) {}
 }

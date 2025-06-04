@@ -28,15 +28,13 @@ from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb
 import common_pb2 as common__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10\x64ispatcher.proto\x12\x08services\x1a\"googleapis/google/rpc/status.proto\x1a\x19google/protobuf/any.proto\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x0c\x63ommon.proto\"I\n\x12\x45xecuteTaskRequest\x12\x0c\n\x04type\x18\x01 \x01(\t\x12%\n\x07payload\x18\x02 \x03(\x0b\x32\x14.google.protobuf.Any2\xc9\x01\n\x08\x44ispatch\x12=\n\x07\x65xecute\x12\x1c.services.ExecuteTaskRequest\x1a\x12.google.rpc.Status\"\x00\x12G\n\x0fget_task_result\x12\x1c.google.protobuf.UInt32Value\x1a\x14.google.protobuf.Any\"\x00\x12\x35\n\rreturn_result\x12\x0e.services.Task\x1a\x12.google.rpc.Status\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10\x64ispatcher.proto\x12\x08services\x1a\"googleapis/google/rpc/status.proto\x1a\x19google/protobuf/any.proto\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x0c\x63ommon.proto2\xc9\x01\n\x08\x44ispatch\x12=\n\x07\x65xecute\x12\x1c.services.ExecuteTaskRequest\x1a\x12.google.rpc.Status\"\x00\x12G\n\x0fget_task_result\x12\x1c.google.protobuf.UInt32Value\x1a\x14.google.protobuf.Any\"\x00\x12\x35\n\rreturn_result\x12\x0e.services.Task\x1a\x12.google.rpc.Status\"\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'dispatcher_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_EXECUTETASKREQUEST']._serialized_start=139
-  _globals['_EXECUTETASKREQUEST']._serialized_end=212
-  _globals['_DISPATCH']._serialized_start=215
-  _globals['_DISPATCH']._serialized_end=416
+  _globals['_DISPATCH']._serialized_start=140
+  _globals['_DISPATCH']._serialized_end=341
 # @@protoc_insertion_point(module_scope)

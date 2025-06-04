@@ -39,7 +39,7 @@ class WorkerStub(object):
         """
         self.receive_task = channel.unary_unary(
                 '/services.Worker/receive_task',
-                request_serializer=common__pb2.Task.SerializeToString,
+                request_serializer=common__pb2.ExecuteTaskRequest.SerializeToString,
                 response_deserializer=googleapis_dot_google_dot_rpc_dot_status__pb2.Status.FromString,
                 _registered_method=True)
         self.get_status = channel.unary_unary(
@@ -71,7 +71,7 @@ def add_WorkerServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'receive_task': grpc.unary_unary_rpc_method_handler(
                     servicer.receive_task,
-                    request_deserializer=common__pb2.Task.FromString,
+                    request_deserializer=common__pb2.ExecuteTaskRequest.FromString,
                     response_serializer=googleapis_dot_google_dot_rpc_dot_status__pb2.Status.SerializeToString,
             ),
             'get_status': grpc.unary_unary_rpc_method_handler(
@@ -105,7 +105,7 @@ class Worker(object):
             request,
             target,
             '/services.Worker/receive_task',
-            common__pb2.Task.SerializeToString,
+            common__pb2.ExecuteTaskRequest.SerializeToString,
             googleapis_dot_google_dot_rpc_dot_status__pb2.Status.FromString,
             options,
             channel_credentials,
