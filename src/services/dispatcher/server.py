@@ -10,7 +10,7 @@ logger = logging.getLogger()
 
 
 def create_server(
-    name_server_address: str | None = None, server_address: str = "[::]:50051"
+    name_server_address: str | None = "[::]:50051", server_address: str = "[::]:50052"
 ):
     name_server_address = name_server_address or os.environ.get("NAME_SERVICE")
 
