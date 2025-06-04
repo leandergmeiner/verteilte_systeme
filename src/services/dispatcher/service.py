@@ -1,35 +1,26 @@
-from src.common.rpc import dispatcher_pb2_grpc, nameserver_pb2_grpc, worker_pb2_grpc
-from src.common.rpc import dispatcher_pb2, common_pb2
-import grpc
-from grpc_status import rpc_status
-from queue import SimpleQueue
-from google.protobuf import empty_pb2, wrappers_pb2, any_pb2
-
-from google.rpc import status_pb2
-
-import os
 import logging
+from queue import SimpleQueue
 
-# Empfang von Aufgaben: receive_task()
-# o Verwaltung von Warteschlange: enqueue_task(task_t task)
-# o Lookup über Namensdienst: lookup_worker(type)
-# o Verteilung an Worker: dispatch_task_to_worker(task_t task)
-# o Speicherung der Ergebnisse: store_result(int task_id, const char*
-# result)
-# o Abruf durch Clients: respond_with_result(int task_id)
-# o Monitoring-Schnittstelle (optional: Textausgabe oder REST)
+import grpc
+from google.protobuf import any_pb2, empty_pb2, wrappers_pb2
+from google.rpc import status_pb2
+from grpc_status import rpc_status
+
+from src.common.rpc import (
+    common_pb2,
+    dispatcher_pb2_grpc,
+    nameserver_pb2_grpc,
+    worker_pb2_grpc,
+)
 
 logger = logging.getLogger()
 
 
 class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
-    def __init__(self, name_service_address: str | None = None):
+    def __init__(self, name_service_address: str):
         super().__init__()
 
-        self.name_service_address = name_service_address or os.environ.get(
-            "NAME_SERVICE"
-        )
-        assert self.name_service_address is not None
+        self.name_service_address = name_service_address
 
         logging.info(
             "Dispacher startet. Name server address is %s", self.name_service_address
@@ -52,7 +43,7 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
             context.abort_with_status(rpc_status.to_status(status))
 
         assert address is not None
-        
+
         logger.info(
             "Dispatching task of type %s to worker %s",
             request.type,
@@ -71,7 +62,7 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
     ):
         """CLIENT -> DISPATCHER: Client requests result from Dispatcher for task"""
         task_id = request.value
-        
+
         if task_id not in self.results:
             context.abort_with_status(
                 rpc_status.to_status(
@@ -80,7 +71,7 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
             )
 
         logger.info("A client requested result of task %i.", task_id)
-        
+
         result: any_pb2.Any = self.results[task_id]
         return result
 
@@ -89,7 +80,7 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
         status = self.store_result(request)
         if status.code != grpc.StatusCode.OK:
             context.abort_with_status(rpc_status.to_status(status))
-            
+
         logger.info("A worker returned the result of task %i.", request.task_id)
 
         return empty_pb2.Empty()

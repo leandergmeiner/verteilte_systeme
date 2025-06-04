@@ -2,7 +2,13 @@ from google.protobuf import any_pb2 as _any_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
-from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Mapping, Optional as _Optional, Union as _Union
+from typing import (
+    ClassVar as _ClassVar,
+    Iterable as _Iterable,
+    Mapping as _Mapping,
+    Optional as _Optional,
+    Union as _Union,
+)
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
@@ -12,7 +18,11 @@ class Task(_message.Message):
     PAYLOAD_FIELD_NUMBER: _ClassVar[int]
     task_id: int
     payload: _containers.RepeatedCompositeFieldContainer[_any_pb2.Any]
-    def __init__(self, task_id: _Optional[int] = ..., payload: _Optional[_Iterable[_Union[_any_pb2.Any, _Mapping]]] = ...) -> None: ...
+    def __init__(
+        self,
+        task_id: _Optional[int] = ...,
+        payload: _Optional[_Iterable[_Union[_any_pb2.Any, _Mapping]]] = ...,
+    ) -> None: ...
 
 class TaskResult(_message.Message):
     __slots__ = ("task_id", "payload")
@@ -20,7 +30,11 @@ class TaskResult(_message.Message):
     PAYLOAD_FIELD_NUMBER: _ClassVar[int]
     task_id: int
     payload: _any_pb2.Any
-    def __init__(self, task_id: _Optional[int] = ..., payload: _Optional[_Union[_any_pb2.Any, _Mapping]] = ...) -> None: ...
+    def __init__(
+        self,
+        task_id: _Optional[int] = ...,
+        payload: _Optional[_Union[_any_pb2.Any, _Mapping]] = ...,
+    ) -> None: ...
 
 class ServiceIPWithPort(_message.Message):
     __slots__ = ("ip", "port")
@@ -28,7 +42,9 @@ class ServiceIPWithPort(_message.Message):
     PORT_FIELD_NUMBER: _ClassVar[int]
     ip: str
     port: int
-    def __init__(self, ip: _Optional[str] = ..., port: _Optional[int] = ...) -> None: ...
+    def __init__(
+        self, ip: _Optional[str] = ..., port: _Optional[int] = ...
+    ) -> None: ...
 
 class ExecuteTaskRequest(_message.Message):
     __slots__ = ("type", "payload")
@@ -36,4 +52,8 @@ class ExecuteTaskRequest(_message.Message):
     PAYLOAD_FIELD_NUMBER: _ClassVar[int]
     type: str
     payload: _containers.RepeatedCompositeFieldContainer[_any_pb2.Any]
-    def __init__(self, type: _Optional[str] = ..., payload: _Optional[_Iterable[_Union[_any_pb2.Any, _Mapping]]] = ...) -> None: ...
+    def __init__(
+        self,
+        type: _Optional[str] = ...,
+        payload: _Optional[_Iterable[_Union[_any_pb2.Any, _Mapping]]] = ...,
+    ) -> None: ...
