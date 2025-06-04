@@ -4,7 +4,6 @@ import grpc
 import warnings
 
 import common_pb2 as common__pb2
-import dispatcher_pb2 as dispatcher__pb2
 from google.protobuf import any_pb2 as google_dot_protobuf_dot_any__pb2
 from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb2
 from googleapis.google.rpc import status_pb2 as googleapis_dot_google_dot_rpc_dot_status__pb2
@@ -40,7 +39,7 @@ class DispatchStub(object):
         """
         self.execute = channel.unary_unary(
                 '/services.Dispatch/execute',
-                request_serializer=dispatcher__pb2.ExecuteTaskRequest.SerializeToString,
+                request_serializer=common__pb2.ExecuteTaskRequest.SerializeToString,
                 response_deserializer=googleapis_dot_google_dot_rpc_dot_status__pb2.Status.FromString,
                 _registered_method=True)
         self.get_task_result = channel.unary_unary(
@@ -84,7 +83,7 @@ def add_DispatchServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'execute': grpc.unary_unary_rpc_method_handler(
                     servicer.execute,
-                    request_deserializer=dispatcher__pb2.ExecuteTaskRequest.FromString,
+                    request_deserializer=common__pb2.ExecuteTaskRequest.FromString,
                     response_serializer=googleapis_dot_google_dot_rpc_dot_status__pb2.Status.SerializeToString,
             ),
             'get_task_result': grpc.unary_unary_rpc_method_handler(
@@ -123,7 +122,7 @@ class Dispatch(object):
             request,
             target,
             '/services.Dispatch/execute',
-            dispatcher__pb2.ExecuteTaskRequest.SerializeToString,
+            common__pb2.ExecuteTaskRequest.SerializeToString,
             googleapis_dot_google_dot_rpc_dot_status__pb2.Status.FromString,
             options,
             channel_credentials,

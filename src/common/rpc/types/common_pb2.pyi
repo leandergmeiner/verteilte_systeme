@@ -21,3 +21,11 @@ class ServiceIPWithPort(_message.Message):
     ip: str
     port: int
     def __init__(self, ip: _Optional[str] = ..., port: _Optional[int] = ...) -> None: ...
+
+class ExecuteTaskRequest(_message.Message):
+    __slots__ = ("type", "payload")
+    TYPE_FIELD_NUMBER: _ClassVar[int]
+    PAYLOAD_FIELD_NUMBER: _ClassVar[int]
+    type: str
+    payload: _containers.RepeatedCompositeFieldContainer[_any_pb2.Any]
+    def __init__(self, type: _Optional[str] = ..., payload: _Optional[_Iterable[_Union[_any_pb2.Any, _Mapping]]] = ...) -> None: ...
