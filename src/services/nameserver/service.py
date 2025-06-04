@@ -9,6 +9,7 @@ import logging
 
 logger = logging.getLogger()
 
+
 class NameServiceServicer(nameserver_pb2_grpc.NameServiceServicer):
     def __init__(self):
         self.name_address_lookup: dict[
@@ -49,7 +50,7 @@ class NameServiceServicer(nameserver_pb2_grpc.NameServiceServicer):
                 )
             )
         if name in self.name_address_lookup:
-            msg = 'ALREADY_REGISTERED'
+            msg = "ALREADY_REGISTERED"
             context.abort_with_status(
                 rpc_status.to_status(
                     status_pb2.Status(grpc.StatusCode.ALREADY_EXISTS, msg)
@@ -63,8 +64,12 @@ class NameServiceServicer(nameserver_pb2_grpc.NameServiceServicer):
                     status_pb2.Status(grpc.StatusCode.INVALID_ARGUMENT, msg)
                 )
             )
-            
-        logger.info("The service worker %s with the type %s has been registered.", str(ip) + str(port), name)
+
+        logger.info(
+            "The service worker %s with the type %s has been registered.",
+            str(ip) + str(port),
+            name,
+        )
 
         self.name_address_lookup[name] = address
 
@@ -86,7 +91,9 @@ class NameServiceServicer(nameserver_pb2_grpc.NameServiceServicer):
                 rpc_status.to_status(status_pb2.Status(grpc.StatusCode.NOT_FOUND, msg))
             )
 
-        logger.info("The address for the service worker of type %s has been requested.", name)
+        logger.info(
+            "The address for the service worker of type %s has been requested.", name
+        )
 
         ip, port = self.name_address_lookup[name]
         return common_pb2.ServiceIPWithPort(ip, port)

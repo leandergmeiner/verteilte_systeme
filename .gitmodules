@@ -1,6 +1,3 @@
-[submodule "src/common/protos/google"]
-	path = src/common/protos/google
-	url = git@github.com:googleapis/api-common-protos.git
-[submodule "src/common/protos/googleapis"]
-	path = src/common/protos/googleapis
+[submodule "googleapis"]
+	path = googleapis
 	url = git@github.com:googleapis/api-common-protos.git

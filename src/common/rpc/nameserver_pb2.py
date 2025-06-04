@@ -4,18 +4,15 @@
 # source: nameserver.proto
 # Protobuf Python Version: 5.29.0
 """Generated protocol buffer code."""
+
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import descriptor_pool as _descriptor_pool
 from google.protobuf import runtime_version as _runtime_version
 from google.protobuf import symbol_database as _symbol_database
 from google.protobuf.internal import builder as _builder
+
 _runtime_version.ValidateProtobufRuntimeVersion(
-    _runtime_version.Domain.PUBLIC,
-    5,
-    29,
-    0,
-    '',
-    'nameserver.proto'
+    _runtime_version.Domain.PUBLIC, 5, 29, 0, "", "nameserver.proto"
 )
 # @@protoc_insertion_point(imports)
 
@@ -27,15 +24,17 @@ from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb
 import common_pb2 as common__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10nameserver.proto\x12\x08services\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x0c\x63ommon.proto\"E\n\x07Service\x12\x0c\n\x04name\x18\x01 \x01(\t\x12,\n\x07\x61\x64\x64ress\x18\x02 \x01(\x0b\x32\x1b.services.ServiceIPWithPort2\xc8\x01\n\x0bNameService\x12\x37\n\x08register\x12\x11.services.Service\x1a\x16.google.protobuf.Empty\"\x00\x12\x39\n\nunregister\x12\x11.services.Service\x1a\x16.google.protobuf.Empty\"\x00\x12\x45\n\x06lookup\x12\x1c.google.protobuf.StringValue\x1a\x1b.services.ServiceIPWithPort\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(
+    b'\n\x10nameserver.proto\x12\x08services\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x0c\x63ommon.proto"E\n\x07Service\x12\x0c\n\x04name\x18\x01 \x01(\t\x12,\n\x07\x61\x64\x64ress\x18\x02 \x01(\x0b\x32\x1b.services.ServiceIPWithPort2\xc8\x01\n\x0bNameService\x12\x37\n\x08register\x12\x11.services.Service\x1a\x16.google.protobuf.Empty"\x00\x12\x39\n\nunregister\x12\x11.services.Service\x1a\x16.google.protobuf.Empty"\x00\x12\x45\n\x06lookup\x12\x1c.google.protobuf.StringValue\x1a\x1b.services.ServiceIPWithPort"\x00\x62\x06proto3'
+)
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
-_builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'nameserver_pb2', _globals)
+_builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, "nameserver_pb2", _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
-  DESCRIPTOR._loaded_options = None
-  _globals['_SERVICE']._serialized_start=105
-  _globals['_SERVICE']._serialized_end=174
-  _globals['_NAMESERVICE']._serialized_start=177
-  _globals['_NAMESERVICE']._serialized_end=377
+    DESCRIPTOR._loaded_options = None
+    _globals["_SERVICE"]._serialized_start = 105
+    _globals["_SERVICE"]._serialized_end = 174
+    _globals["_NAMESERVICE"]._serialized_start = 177
+    _globals["_NAMESERVICE"]._serialized_end = 377
 # @@protoc_insertion_point(module_scope)
