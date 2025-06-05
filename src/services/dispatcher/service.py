@@ -48,7 +48,7 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
         task = common_pb2.Task(task_id=task_id, payload=request.payload)
 
         status, address = self.lookup_worker(request.type)
-        if status.code != grpc.StatusCode.OK:
+        if status.code != code_pb2.OK:
             context.abort_with_status(rpc_status.to_status(status))
 
         assert address is not None
@@ -63,7 +63,7 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
         if status.code != code_pb2.OK:
             context.abort_with_status(rpc_status.to_status(status))
 
-        return empty_pb2.Empty()
+        return wrappers_pb2.UInt32Value(value=task.task_id)
 
     def get_task_result(
         self, request: wrappers_pb2.UInt32Value, context: grpc.ServicerContext
@@ -81,7 +81,10 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
             )
 
         logger.info("A client requested result of task %i.", task_id)
-        return common_pb2.TaskResult(task_id=task_id, payload=self.results[task_id])
+        result = common_pb2.TaskResult(task_id=task_id, payload=self.results[task_id])
+        del self.results[task_id]
+
+        return result
 
     def return_result(self, request: common_pb2.Task, context: grpc.ServicerContext):
         """WORKER -> DISPATCH: Returns result of computation"""
@@ -104,9 +107,9 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
                 stub.receive_task(task)
 
                 return status_pb2.Status(code=code_pb2.OK)
-            except grpc.RpcError as e:
+            except grpc.RpcError:
                 return status_pb2.Status(
-                    code=e.code(), message="WORKER_RECEIVE_TASK_FAILED"
+                    code=code_pb2.UNKNOWN, message="WORKER_RECEIVE_TASK_FAILED"
                 )
             except Exception:
                 return status_pb2.Status(code=code_pb2.UNKNOWN)
@@ -117,11 +120,15 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
         with grpc.insecure_channel(self.name_service_address) as channel:
             try:
                 stub = nameserver_pb2_grpc.NameServiceStub(channel)
-                address: common_pb2.ServiceIPWithPort = stub.lookup(type)
+                address: common_pb2.ServiceIPWithPort = stub.lookup(
+                    wrappers_pb2.StringValue(value=type)
+                )
 
                 return status_pb2.Status(code=code_pb2.OK), address
-            except grpc.RpcError as e:
-                return status_pb2.Status(code=e.code(), message="WORKER_LOOKUP_FAILED")
+            except grpc.RpcError:
+                return status_pb2.Status(
+                    code=code_pb2.NOT_FOUND, message="WORKER_LOOKUP_FAILED"
+                ), None
 
     def store_result(self, task_result: common_pb2.Task) -> status_pb2.Status:
         if task_result.task_id in self.results:

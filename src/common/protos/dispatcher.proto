@@ -9,7 +9,7 @@ package services;
 
 service Dispatch {
     // CLIENT -> DISPATCHER: Client requests execution of task
-    rpc execute(services.ExecuteTaskRequest) returns (google.protobuf.Empty) {}
+    rpc execute(services.ExecuteTaskRequest) returns (google.protobuf.UInt32Value) {}
     // CLIENT -> DISPATCHER: Client requests result from Dispatcher for task
     rpc get_task_result(google.protobuf.UInt32Value) returns (services.TaskResult) {}
     // WORKER -> DISPATCH: Returns result of computation

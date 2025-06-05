@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-import "google/protobuf/any.proto";
-
 package services;
 
 message Task {
@@ -22,5 +20,5 @@ message ServiceIPWithPort {
 
 message ExecuteTaskRequest {
     string type = 1;
-    repeated google.protobuf.Any payload = 2;
+    repeated string payload = 2;
 }

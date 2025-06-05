@@ -7,7 +7,7 @@ import logging
 import fire
 
 
-from src.services import dispatcher, nameserver, worker
+from src.services import dispatcher, nameserver, worker, client
 
 
 def main():
@@ -17,6 +17,7 @@ def main():
             "dispatcher": dispatcher.create_server,
             "nameserver": nameserver.create_server,
             "worker": worker.create_server,
+            "exec": client.execute_command,
         }
     )
 
