@@ -16,7 +16,7 @@ service NameService {
     // SERVICE -> NAME_SERVICE: Register service
     rpc register(Service) returns (google.protobuf.Empty) {}
     // SERVICE -> NAME_SERVICE: Unregister service
-    rpc unregister(Service) returns (google.protobuf.Empty) {}
+    rpc unregister(google.protobuf.StringValue) returns (google.protobuf.Empty) {}
     // DISPATCHER -> NAME_SERVICE: get ip of service by name
     rpc lookup(google.protobuf.StringValue) returns (services.ServiceIPWithPort) {}
 }

@@ -1,11 +1,12 @@
-from src.common.rpc import nameserver_pb2_grpc
-from src.common.rpc import nameserver_pb2, common_pb2
-import grpc
-from grpc_status import rpc_status
 import ipaddress
-from google.protobuf import wrappers_pb2
-from google.rpc import status_pb2
 import logging
+
+import grpc
+from google.protobuf import wrappers_pb2, empty_pb2
+from google.rpc import code_pb2, status_pb2
+from grpc_status import rpc_status
+
+from src.common.rpc import common_pb2, nameserver_pb2, nameserver_pb2_grpc
 
 logger = logging.getLogger()
 
@@ -28,11 +29,11 @@ class NameServiceServicer(nameserver_pb2_grpc.NameServiceServicer):
         bool,
         str | None,
     ]:
-        try:
-            _ = ipaddress.ip_address(ip)
-        except ValueError:
-            msg = "INVALID_IP_ADDRESS"
-            return None, False, msg
+        # try:
+        #     _ = ipaddress.ip_address(ip)
+        # except ValueError:
+        #     msg = "INVALID_IP_ADDRESS"
+        #     return None, False, msg
 
         if port >= 2**16:
             msg = "INVALID_PORT"
@@ -46,14 +47,15 @@ class NameServiceServicer(nameserver_pb2_grpc.NameServiceServicer):
         if not valid:
             context.abort_with_status(
                 rpc_status.to_status(
-                    status_pb2.Status(grpc.StatusCode.INVALID_ARGUMENT, msg)
+                    status_pb2.Status(code=code_pb2.INVALID_ARGUMENT, message=msg)
                 )
             )
+            
         if name in self.name_address_lookup:
             msg = "ALREADY_REGISTERED"
             context.abort_with_status(
                 rpc_status.to_status(
-                    status_pb2.Status(grpc.StatusCode.ALREADY_EXISTS, msg)
+                    status_pb2.Status(code=code_pb2.ALREADY_EXISTS, message=msg)
                 )
             )
 
@@ -61,17 +63,19 @@ class NameServiceServicer(nameserver_pb2_grpc.NameServiceServicer):
         if not valid:
             context.abort_with_status(
                 rpc_status.to_status(
-                    status_pb2.Status(grpc.StatusCode.INVALID_ARGUMENT, msg)
+                    status_pb2.Status(code=code_pb2.INVALID_ARGUMENT, message=msg)
                 )
             )
 
         logger.info(
             "The service worker %s with the type %s has been registered.",
-            str(ip) + str(port),
+            f"{ip}:{port}",
             name,
         )
 
         self.name_address_lookup[name] = address
+
+        return empty_pb2.Empty()
 
     def unregister(
         self, request: wrappers_pb2.StringValue, context: grpc.ServicerContext
@@ -83,12 +87,17 @@ class NameServiceServicer(nameserver_pb2_grpc.NameServiceServicer):
             del self.name_address_lookup[name]
             logger.info("Unregistered service worker of type %s.", name)
 
+        return empty_pb2.Empty()
+
     def lookup(self, request: wrappers_pb2.StringValue, context: grpc.ServicerContext):
         name = request.value
+
         if name not in self.name_address_lookup:
             msg = "UNKNOWN_SERVICE"
             context.abort_with_status(
-                rpc_status.to_status(status_pb2.Status(grpc.StatusCode.NOT_FOUND, msg))
+                rpc_status.to_status(
+                    status_pb2.Status(code=code_pb2.NOT_FOUND, message=msg)
+                )
             )
 
         logger.info(
@@ -96,4 +105,4 @@ class NameServiceServicer(nameserver_pb2_grpc.NameServiceServicer):
         )
 
         ip, port = self.name_address_lookup[name]
-        return common_pb2.ServiceIPWithPort(ip, port)
+        return common_pb2.ServiceIPWithPort(ip=ip, port=port)
