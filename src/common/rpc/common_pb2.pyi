@@ -23,6 +23,14 @@ class TaskResult(_message.Message):
     valid: bool
     def __init__(self, task_id: _Optional[int] = ..., payload: _Optional[_Iterable[str]] = ..., valid: bool = ...) -> None: ...
 
+class TaskResult(_message.Message):
+    __slots__ = ("task_id", "payload")
+    TASK_ID_FIELD_NUMBER: _ClassVar[int]
+    PAYLOAD_FIELD_NUMBER: _ClassVar[int]
+    task_id: int
+    payload: _any_pb2.Any
+    def __init__(self, task_id: _Optional[int] = ..., payload: _Optional[_Union[_any_pb2.Any, _Mapping]] = ...) -> None: ...
+
 class ServiceIPWithPort(_message.Message):
     __slots__ = ("ip", "port")
     IP_FIELD_NUMBER: _ClassVar[int]
