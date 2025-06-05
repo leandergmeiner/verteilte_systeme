@@ -7,13 +7,17 @@ import logging
 import fire
 
 
-from src.services import dispatcher, nameserver
+from src.services import dispatcher, nameserver, worker
 
 
 def main():
     logging.basicConfig(level=logging.INFO)
     fire.Fire(
-        {"dispatcher": dispatcher.create_server, "nameserver": nameserver.create_server}
+        {
+            "dispatcher": dispatcher.create_server,
+            "nameserver": nameserver.create_server,
+            "worker": worker.create_server,
+        }
     )
 
 

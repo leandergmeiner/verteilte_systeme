@@ -1,25 +1,29 @@
 import logging
+import typing
 from queue import SimpleQueue
 
 import grpc
-from google.protobuf import any_pb2, empty_pb2, wrappers_pb2
-from google.rpc import status_pb2, code_pb2
+from google.protobuf import empty_pb2, wrappers_pb2
+from google.rpc import code_pb2, status_pb2
 from grpc_status import rpc_status
 
 from src.common.rpc import (
     common_pb2,
     dispatcher_pb2_grpc,
+    nameserver_pb2,
     nameserver_pb2_grpc,
     worker_pb2_grpc,
 )
+from src.services import DISPATCHER_NAME
 
 logger = logging.getLogger()
 
 
 class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
-    def __init__(self, name_service_address: str):
+    def __init__(self, server_address: str, name_service_address: str):
         super().__init__()
 
+        self.server_address = server_address
         self.name_service_address = name_service_address
 
         logging.info(
@@ -28,13 +32,18 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
 
         self._next_task_id = 0
         self.task_queue = SimpleQueue()
-        self.results: dict[int, any_pb2.Any] = {}
+        self.results: dict[int, typing.Iterable] = {}
+
+        self._registered = False
+        self.register_at_name_server()
+
+    def __del__(self):
+        self.unregister_at_name_server()
 
     def execute(
         self, request: common_pb2.ExecuteTaskRequest, context: grpc.ServicerContext
     ):
         """CLIENT -> DISPATCHER: Client requests execution of task"""
-        # TODO: store_result
         task_id = self.next_task_id()
         task = common_pb2.Task(task_id=task_id, payload=request.payload)
 
@@ -44,10 +53,9 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
 
         assert address is not None
 
+        ip, port = address.ip, address.port
         logger.info(
-            "Dispatching task of type %s to worker %s",
-            request.type,
-            str(address.ip) + str(address.port),
+            "Dispatching task of type %s to worker %s", request.type, f"{ip}:{port}"
         )
 
         status = self.dispatch_task_to_worker(address, task)
@@ -73,9 +81,7 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
             )
 
         logger.info("A client requested result of task %i.", task_id)
-
-        result: any_pb2.Any = self.results[task_id]
-        return result
+        return common_pb2.TaskResult(task_id=task_id, payload=self.results[task_id])
 
     def return_result(self, request: common_pb2.Task, context: grpc.ServicerContext):
         """WORKER -> DISPATCH: Returns result of computation"""
@@ -90,7 +96,8 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
     def dispatch_task_to_worker(
         self, address: common_pb2.ServiceIPWithPort, task: common_pb2.Task
     ) -> status_pb2.Status:
-        addr = str(address.ip) + str(address.port)
+        ip, port = address.ip, address.port
+        addr = f"{ip}:{port}"
         with grpc.insecure_channel(addr) as channel:
             try:
                 stub = worker_pb2_grpc.WorkerStub(channel)
@@ -99,7 +106,7 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
                 return status_pb2.Status(code=code_pb2.OK)
             except grpc.RpcError as e:
                 return status_pb2.Status(
-                    code=e.status(), message="WORKER_RECEIVE_TASK_FAILED"
+                    code=e.code(), message="WORKER_RECEIVE_TASK_FAILED"
                 )
             except Exception:
                 return status_pb2.Status(code=code_pb2.UNKNOWN)
@@ -114,9 +121,7 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
 
                 return status_pb2.Status(code=code_pb2.OK), address
             except grpc.RpcError as e:
-                return status_pb2.Status(
-                    code=e.status(), message="WORKER_LOOKUP_FAILED"
-                )
+                return status_pb2.Status(code=e.code(), message="WORKER_LOOKUP_FAILED")
 
     def store_result(self, task_result: common_pb2.Task) -> status_pb2.Status:
         if task_result.task_id in self.results:
@@ -130,3 +135,41 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
     def next_task_id(self) -> int:
         self._next_task_id += 1
         return self._next_task_id
+
+    def register_at_name_server(self):
+        if self._registered:
+            return
+
+        with grpc.insecure_channel(self.name_service_address) as channel:
+            stub = nameserver_pb2_grpc.NameServiceStub(channel)
+            _ = stub.register(
+                nameserver_pb2.Service(
+                    name=DISPATCHER_NAME,
+                    address=common_pb2.ServiceIPWithPort(
+                        ip=self.server_address.rsplit(":")[0],
+                        port=int(self.server_address.rsplit(":")[1]),
+                    ),
+                )
+            )
+
+        self._registered = True
+        logger.info(
+            "Registered self with address %s and name %s at the name server",
+            self.server_address,
+            DISPATCHER_NAME,
+        )
+
+    def unregister_at_name_server(self):
+        if not self._registered:
+            return
+
+        with grpc.insecure_channel(self.name_service_address) as channel:
+            stub = nameserver_pb2_grpc.NameServiceStub(channel)
+            _ = stub.unregister(wrappers_pb2.StringValue(value=DISPATCHER_NAME))
+
+        self._registered = False
+        logger.info(
+            "Unegistered self with address %s and name %s at the name server",
+            self.server_address,
+            DISPATCHER_NAME,
+        )
