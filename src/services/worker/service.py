@@ -1,4 +1,3 @@
-import asyncio
 import logging
 import typing
 from functools import cached_property
@@ -48,8 +47,8 @@ class WorkerServicer(worker_pb2_grpc.WorkerServicer):
 
     def receive_task(self, request: common_pb2.Task, context: grpc.ServicerContext):
         """DISPATCHER -> WORKER: Queue a new task for processing on the worker"""
-        logger.info("Execution of task was requested")
-        asyncio.get_running_loop().run_until_complete(self.execute_task(request))
+        logger.info("Execution of task with ID %i was requested", request.task_id)
+        self.execute_task(request)
         return empty_pb2.Empty()
 
     def get_status(self, request, context):
@@ -57,7 +56,7 @@ class WorkerServicer(worker_pb2_grpc.WorkerServicer):
         logger.info("Status was requested")
         return self.task_worker.get_status()
 
-    async def execute_task(self, request: common_pb2.Task):
+    def execute_task(self, request: common_pb2.Task):
         valid, result = self.task_worker.process_task(request.payload)
 
         with grpc.insecure_channel(self.dispatcher_address) as channel:
@@ -75,7 +74,9 @@ class WorkerServicer(worker_pb2_grpc.WorkerServicer):
         with grpc.insecure_channel(self.name_service_address) as channel:
             try:
                 stub = nameserver_pb2_grpc.NameServiceStub(channel)
-                address: common_pb2.ServiceIPWithPort = stub.lookup(DISPATCHER_NAME)
+                address: common_pb2.ServiceIPWithPort = stub.lookup(
+                    wrappers_pb2.StringValue(value=DISPATCHER_NAME)
+                )
 
                 ip, port = address.ip, address.port
                 return f"{ip}:{port}"

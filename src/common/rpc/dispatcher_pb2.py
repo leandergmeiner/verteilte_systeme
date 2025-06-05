@@ -27,7 +27,7 @@ from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 import common_pb2 as common__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10\x64ispatcher.proto\x12\x08services\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x0c\x63ommon.proto2\xd7\x01\n\x08\x44ispatch\x12\x41\n\x07\x65xecute\x12\x1c.services.ExecuteTaskRequest\x1a\x16.google.protobuf.Empty\"\x00\x12G\n\x0fget_task_result\x12\x1c.google.protobuf.UInt32Value\x1a\x14.services.TaskResult\"\x00\x12?\n\rreturn_result\x12\x14.services.TaskResult\x1a\x16.google.protobuf.Empty\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10\x64ispatcher.proto\x12\x08services\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x0c\x63ommon.proto2\xdd\x01\n\x08\x44ispatch\x12G\n\x07\x65xecute\x12\x1c.services.ExecuteTaskRequest\x1a\x1c.google.protobuf.UInt32Value\"\x00\x12G\n\x0fget_task_result\x12\x1c.google.protobuf.UInt32Value\x1a\x14.services.TaskResult\"\x00\x12?\n\rreturn_result\x12\x14.services.TaskResult\x1a\x16.google.protobuf.Empty\"\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -35,5 +35,5 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'dispatcher_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
   _globals['_DISPATCH']._serialized_start=106
-  _globals['_DISPATCH']._serialized_end=321
+  _globals['_DISPATCH']._serialized_end=327
 # @@protoc_insertion_point(module_scope)

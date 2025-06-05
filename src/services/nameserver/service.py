@@ -10,6 +10,10 @@ from src.common.rpc import common_pb2, nameserver_pb2, nameserver_pb2_grpc
 
 logger = logging.getLogger()
 
+logger = logging.getLogger()
+
+logger = logging.getLogger()
+
 
 class NameServiceServicer(nameserver_pb2_grpc.NameServiceServicer):
     def __init__(self):
@@ -66,6 +70,24 @@ class NameServiceServicer(nameserver_pb2_grpc.NameServiceServicer):
                     status_pb2.Status(code=code_pb2.INVALID_ARGUMENT, message=msg)
                 )
             )
+
+        logger.info(
+            "The service worker %s with the type %s has been registered.",
+            f"{ip}:{port}",
+            name,
+        )
+
+        logger.info(
+            "The service worker %s with the type %s has been registered.",
+            f"{ip}:{port}",
+            name,
+        )
+
+        logger.info(
+            "The service worker %s with the type %s has been registered.",
+            f"{ip}:{port}",
+            name,
+        )
 
         logger.info(
             "The service worker %s with the type %s has been registered.",

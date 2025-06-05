@@ -39,7 +39,7 @@ class DispatchStub(object):
         self.execute = channel.unary_unary(
                 '/services.Dispatch/execute',
                 request_serializer=common__pb2.ExecuteTaskRequest.SerializeToString,
-                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                response_deserializer=google_dot_protobuf_dot_wrappers__pb2.UInt32Value.FromString,
                 _registered_method=True)
         self.get_task_result = channel.unary_unary(
                 '/services.Dispatch/get_task_result',
@@ -83,7 +83,7 @@ def add_DispatchServicer_to_server(servicer, server):
             'execute': grpc.unary_unary_rpc_method_handler(
                     servicer.execute,
                     request_deserializer=common__pb2.ExecuteTaskRequest.FromString,
-                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+                    response_serializer=google_dot_protobuf_dot_wrappers__pb2.UInt32Value.SerializeToString,
             ),
             'get_task_result': grpc.unary_unary_rpc_method_handler(
                     servicer.get_task_result,
@@ -122,7 +122,7 @@ class Dispatch(object):
             target,
             '/services.Dispatch/execute',
             common__pb2.ExecuteTaskRequest.SerializeToString,
-            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            google_dot_protobuf_dot_wrappers__pb2.UInt32Value.FromString,
             options,
             channel_credentials,
             insecure,
