@@ -29,9 +29,7 @@ class ServiceIPWithPort(_message.Message):
     PORT_FIELD_NUMBER: _ClassVar[int]
     ip: str
     port: int
-    def __init__(
-        self, ip: _Optional[str] = ..., port: _Optional[int] = ...
-    ) -> None: ...
+    def __init__(self, ip: _Optional[str] = ..., port: _Optional[int] = ...) -> None: ...
 
 class ExecuteTaskRequest(_message.Message):
     __slots__ = ("type", "payload")

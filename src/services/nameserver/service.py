@@ -73,7 +73,7 @@ class NameServiceServicer(nameserver_pb2_grpc.NameServiceServicer):
 
         logger.info(
             "The service worker %s with the type %s has been registered.",
-            str(ip) + str(port),
+            f"{ip}:{port}",
             name,
         )
 
