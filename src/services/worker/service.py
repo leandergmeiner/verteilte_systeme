@@ -1,4 +1,5 @@
 import logging
+import time
 import typing
 from functools import cached_property
 
@@ -87,17 +88,28 @@ class WorkerServicer(worker_pb2_grpc.WorkerServicer):
         if self._registered:
             return
 
-        with grpc.insecure_channel(self.name_service_address) as channel:
-            stub = nameserver_pb2_grpc.NameServiceStub(channel)
-            _ = stub.register(
-                nameserver_pb2.Service(
-                    name=self.task_type,
-                    address=common_pb2.ServiceIPWithPort(
-                        ip=self.server_address.rsplit(":", 1)[0],
-                        port=int(self.server_address.rsplit(":", 1)[1]),
-                    ),
-                )
-            )
+        while True:
+            with grpc.insecure_channel(self.name_service_address) as channel:
+                try:
+                    stub = nameserver_pb2_grpc.NameServiceStub(channel)
+                    _ = stub.register(
+                        nameserver_pb2.Service(
+                            name=self.task_type,
+                            address=common_pb2.ServiceIPWithPort(
+                                ip=self.server_address.rsplit(":", 1)[0],
+                                port=int(self.server_address.rsplit(":", 1)[1]),
+                            ),
+                        )
+                    )
+                    break
+                except grpc.RpcError as e:
+                    logger.warning(
+                        'Could not register at the name server. The error was "%s"',
+                        e.details(),
+                    )
+                    logger.warning("Trying again ...")
+                    time.sleep(3.0)
+                    continue
 
         self._registered = True
         logger.info(
@@ -111,12 +123,14 @@ class WorkerServicer(worker_pb2_grpc.WorkerServicer):
             return
 
         with grpc.insecure_channel(self.name_service_address) as channel:
-            stub = nameserver_pb2_grpc.NameServiceStub(channel)
-            _ = stub.unregister(wrappers_pb2.StringValue(value=self.task_type))
-
-        self._registered = False
-        logger.info(
-            "Unregistered self with address %s and name %s at the name server",
-            self.server_address,
-            self.task_type,
-        )
+            try:
+                stub = nameserver_pb2_grpc.NameServiceStub(channel)
+                _ = stub.unregister(wrappers_pb2.StringValue(value=self.task_type))
+                self._registered = False
+                logger.info(
+                    "Unregistered self with address %s and name %s at the name server",
+                    self.server_address,
+                    self.task_type,
+                )
+            except grpc.RpcError:
+                logger.warning("Could not unregister from the name server.")

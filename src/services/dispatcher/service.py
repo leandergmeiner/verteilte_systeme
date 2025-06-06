@@ -1,4 +1,5 @@
 import logging
+import time
 import typing
 from queue import SimpleQueue
 
@@ -148,16 +149,27 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
             return
 
         with grpc.insecure_channel(self.name_service_address) as channel:
-            stub = nameserver_pb2_grpc.NameServiceStub(channel)
-            _ = stub.register(
-                nameserver_pb2.Service(
-                    name=DISPATCHER_NAME,
-                    address=common_pb2.ServiceIPWithPort(
-                        ip=self.server_address.rsplit(":")[0],
-                        port=int(self.server_address.rsplit(":")[1]),
-                    ),
-                )
-            )
+            while True:
+                try:
+                    stub = nameserver_pb2_grpc.NameServiceStub(channel)
+                    _ = stub.register(
+                        nameserver_pb2.Service(
+                            name=DISPATCHER_NAME,
+                            address=common_pb2.ServiceIPWithPort(
+                                ip=self.server_address.rsplit(":")[0],
+                                port=int(self.server_address.rsplit(":")[1]),
+                            ),
+                        )
+                    )
+                    break
+                except grpc.RpcError as e:
+                    logger.warning(
+                        "Could not register at the name server. The error was \"%s\"",
+                        e.details(),
+                    )
+                    logger.warning("Trying again ...")
+                    time.sleep(3.0)
+                    continue
 
         self._registered = True
         logger.info(
@@ -171,12 +183,15 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
             return
 
         with grpc.insecure_channel(self.name_service_address) as channel:
-            stub = nameserver_pb2_grpc.NameServiceStub(channel)
-            _ = stub.unregister(wrappers_pb2.StringValue(value=DISPATCHER_NAME))
+            try:
+                stub = nameserver_pb2_grpc.NameServiceStub(channel)
+                _ = stub.unregister(wrappers_pb2.StringValue(value=DISPATCHER_NAME))
+                self._registered = False
+                logger.info(
+                    "Unegistered self with address %s and name %s at the name server",
+                    self.server_address,
+                    DISPATCHER_NAME,
+                )
+            except grpc.RpcError:
+                logger.warning("Could not unregister from the name server.")
 
-        self._registered = False
-        logger.info(
-            "Unegistered self with address %s and name %s at the name server",
-            self.server_address,
-            DISPATCHER_NAME,
-        )

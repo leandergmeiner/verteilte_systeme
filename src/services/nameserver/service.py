@@ -77,24 +77,6 @@ class NameServiceServicer(nameserver_pb2_grpc.NameServiceServicer):
             name,
         )
 
-        logger.info(
-            "The service worker %s with the type %s has been registered.",
-            f"{ip}:{port}",
-            name,
-        )
-
-        logger.info(
-            "The service worker %s with the type %s has been registered.",
-            f"{ip}:{port}",
-            name,
-        )
-
-        logger.info(
-            "The service worker %s with the type %s has been registered.",
-            f"{ip}:{port}",
-            name,
-        )
-
         self.name_address_lookup[name] = address
 
         return empty_pb2.Empty()
