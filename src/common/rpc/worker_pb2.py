@@ -22,19 +22,20 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
+from google.rpc import status_pb2 as google_dot_rpc_dot_status__pb2
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 import common_pb2 as common__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0cworker.proto\x12\x08services\x1a\x1bgoogle/protobuf/empty.proto\x1a\x0c\x63ommon.proto\"<\n\x0cWorkerStatus\x12\n\n\x02id\x18\x01 \x01(\r\x12\x14\n\x07message\x18\x02 \x01(\tH\x00\x88\x01\x01\x42\n\n\x08_message2\x82\x01\n\x06Worker\x12\x38\n\x0creceive_task\x12\x0e.services.Task\x1a\x16.google.protobuf.Empty\"\x00\x12>\n\nget_status\x12\x16.google.protobuf.Empty\x1a\x16.services.WorkerStatus\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0cworker.proto\x12\x08services\x1a\x17google/rpc/status.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x0c\x63ommon.proto\"Q\n\x0cWorkerStatus\x12\r\n\x05usage\x18\x01 \x01(\t\x12\'\n\x06status\x18\x02 \x01(\x0b\x32\x12.google.rpc.StatusH\x00\x88\x01\x01\x42\t\n\x07_status2\x82\x01\n\x06Worker\x12\x38\n\x0creceive_task\x12\x0e.services.Task\x1a\x16.google.protobuf.Empty\"\x00\x12>\n\nget_status\x12\x16.google.protobuf.Empty\x1a\x16.services.WorkerStatus\"\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'worker_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_WORKERSTATUS']._serialized_start=69
-  _globals['_WORKERSTATUS']._serialized_end=129
-  _globals['_WORKER']._serialized_start=132
-  _globals['_WORKER']._serialized_end=262
+  _globals['_WORKERSTATUS']._serialized_start=94
+  _globals['_WORKERSTATUS']._serialized_end=175
+  _globals['_WORKER']._serialized_start=178
+  _globals['_WORKER']._serialized_end=308
 # @@protoc_insertion_point(module_scope)

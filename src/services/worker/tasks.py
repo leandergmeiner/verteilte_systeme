@@ -1,7 +1,7 @@
-from src.services.worker.common import TaskDispatcher
 import typing
-from google.rpc import code_pb2
+
 from src.common.rpc import worker_pb2
+from src.services.worker.common import TaskDispatcher
 
 
 class HashTaskDispatcher(TaskDispatcher):
@@ -15,8 +15,7 @@ class HashTaskDispatcher(TaskDispatcher):
 
     def get_status(self):
         return worker_pb2.WorkerStatus(
-            code_pb2.OK,
-            """Expected arguments: list of strings
+            usage="""Expected arguments: list of strings
 Returns: hashed integer values of the strings
 """,
         )
@@ -30,8 +29,7 @@ class ReverseTaskDispatcher(TaskDispatcher):
 
     def get_status(self):
         return worker_pb2.WorkerStatus(
-            code_pb2.OK,
-            """Expected arguments: list of strings
+            usage="""Expected arguments: list of strings
 Returns: Reversed strings
 """,
         )
@@ -48,8 +46,7 @@ class SumTaskDispatcher(TaskDispatcher):
 
     def get_status(self):
         return worker_pb2.WorkerStatus(
-            code_pb2.OK,
-            """Expected arguments: list integers
+            usage="""Expected arguments: list integers
 Returns: The sum of the integers
 """,
         )
