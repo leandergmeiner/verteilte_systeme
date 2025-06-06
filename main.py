@@ -18,6 +18,7 @@ def main():
             "nameserver": nameserver.create_server,
             "worker": worker.create_server,
             "exec": client.execute_command,
+            "help": client.worker_help,
         }
     )
 
