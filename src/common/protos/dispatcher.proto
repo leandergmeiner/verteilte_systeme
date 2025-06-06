@@ -1,6 +1,5 @@
 syntax = "proto3";
 
-import "google/protobuf/any.proto";
 import "google/protobuf/wrappers.proto";
 import "google/protobuf/empty.proto";
 
@@ -10,9 +9,9 @@ package services;
 
 service Dispatch {
     // CLIENT -> DISPATCHER: Client requests execution of task
-    rpc execute(services.ExecuteTaskRequest) returns (google.protobuf.Empty) {}
+    rpc execute(services.ExecuteTaskRequest) returns (google.protobuf.UInt32Value) {}
     // CLIENT -> DISPATCHER: Client requests result from Dispatcher for task
-    rpc get_task_result(google.protobuf.UInt32Value) returns (google.protobuf.Any) {}
+    rpc get_task_result(google.protobuf.UInt32Value) returns (services.TaskResult) {}
     // WORKER -> DISPATCH: Returns result of computation
     rpc return_result(services.TaskResult) returns (google.protobuf.Empty) {}
 }
