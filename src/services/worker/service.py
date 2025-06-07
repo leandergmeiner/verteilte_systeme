@@ -14,31 +14,29 @@ from src.common.rpc import (
     worker_pb2_grpc,
 )
 from src.services import DISPATCHER_NAME
-from src.services.worker.tasks import (
-    HashTaskDispatcher,
-    ReverseTaskDispatcher,
-    SumTaskDispatcher,
-    TaskDispatcher,
-)
-
-logger = logging.getLogger()
-
+from src.services.worker import tasks
+import hashlib
 
 class WorkerServicer(worker_pb2_grpc.WorkerServicer):
     def __init__(self, task_type: str, server_address: str, name_service_address: str):
         self.server_address = server_address
         self.name_service_address = name_service_address
 
-        task_workers: typing.Final[dict[str, TaskDispatcher]] = {
-            "sum": SumTaskDispatcher(),
-            "hash": HashTaskDispatcher(hash),
-            "reverse": ReverseTaskDispatcher(),
+        task_workers: typing.Final[dict[str, tasks.TaskDispatcher]] = {
+            "sum": tasks.SumTaskDispatcher(),
+            "hash": tasks.HashTaskDispatcher(hashlib.md5),
+            "reverse": tasks.ReverseTaskDispatcher(),
+            "strlen": tasks.StrlenTaskDispatcher(),
+            "floor": tasks.FloorTaskDispatcher(),
+            "softmax": tasks.SoftmaxTaskDispatcher(),
         }
+        
+        self.logger = logging.getLogger(f"worker_{task_type}")
 
         self.task_type = task_type
         self.task_worker = task_workers[self.task_type]
 
-        logger.info("Started worker with task type %s", self.task_type)
+        self.logger.info("Started worker with task type %s", self.task_type)
 
         self._registered = False
         self.register_at_name_server()
@@ -48,13 +46,13 @@ class WorkerServicer(worker_pb2_grpc.WorkerServicer):
 
     def receive_task(self, request: common_pb2.Task, context: grpc.ServicerContext):
         """DISPATCHER -> WORKER: Queue a new task for processing on the worker"""
-        logger.info("Execution of task with ID %i was requested", request.task_id)
+        self.logger.info("Execution of task with ID %i was requested", request.task_id)
         self.execute_task(request)
         return empty_pb2.Empty()
 
     def get_status(self, request, context):
         """Any -> WORKER: Query the status of the worker"""
-        logger.info("Status was requested")
+        self.logger.info("Status was requested")
         return self.task_worker.get_status()
 
     def execute_task(self, request: common_pb2.Task):
@@ -68,7 +66,7 @@ class WorkerServicer(worker_pb2_grpc.WorkerServicer):
                     task_id=request.task_id, payload=result, valid=valid
                 )
             )
-            logger.info("Sent task result to dispatcher")
+            self.logger.info("Sent task result to dispatcher")
 
     @cached_property
     def dispatcher_address(self):
@@ -103,16 +101,17 @@ class WorkerServicer(worker_pb2_grpc.WorkerServicer):
                     )
                     break
                 except grpc.RpcError as e:
-                    logger.warning(
-                        'Could not register at the name server. The error was "%s"',
+                    self.logger.warning(
+                        'Could not register with task %s at the name server. The error was "%s"',
+                        self.task_type,
                         e.details(),
                     )
-                    logger.warning("Trying again ...")
+                    self.logger.warning("Trying again ...")
                     time.sleep(3.0)
                     continue
 
         self._registered = True
-        logger.info(
+        self.logger.info(
             "Registered self with address %s and name %s at the name server",
             self.server_address,
             self.task_type,
@@ -127,10 +126,10 @@ class WorkerServicer(worker_pb2_grpc.WorkerServicer):
                 stub = nameserver_pb2_grpc.NameServiceStub(channel)
                 _ = stub.unregister(wrappers_pb2.StringValue(value=self.task_type))
                 self._registered = False
-                logger.info(
+                self.logger.info(
                     "Unregistered self with address %s and name %s at the name server",
                     self.server_address,
                     self.task_type,
                 )
             except grpc.RpcError:
-                logger.warning("Could not unregister from the name server.")
+                self.logger.warning("Could not unregister from the name server.")

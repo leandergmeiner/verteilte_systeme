@@ -17,17 +17,23 @@ from src.common.rpc import (
 )
 from src.services import DISPATCHER_NAME
 
-logger = logging.getLogger()
-
 
 class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
-    def __init__(self, server_address: str, name_service_address: str):
+    def __init__(
+        self,
+        server_address: str,
+        name_service_address: str,
+        dispatcher_name: str = DISPATCHER_NAME,
+    ):
         super().__init__()
 
         self.server_address = server_address
         self.name_service_address = name_service_address
+        self.dispatcher_name = dispatcher_name
 
-        logging.info(
+        self.logger = logging.getLogger(self.dispatcher_name)
+
+        self.logger.info(
             "Dispacher started. Name server address is %s", self.name_service_address
         )
 
@@ -55,7 +61,7 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
         assert address is not None
 
         ip, port = address.ip, address.port
-        logger.info(
+        self.logger.info(
             "Dispatching task of type %s to worker %s", request.type, f"{ip}:{port}"
         )
 
@@ -81,7 +87,7 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
                 )
             )
 
-        logger.info("A client requested result of task %i.", task_id)
+        self.logger.info("A client requested result of task %i.", task_id)
         result = common_pb2.TaskResult(task_id=task_id, payload=self.results[task_id])
         del self.results[task_id]
 
@@ -93,7 +99,7 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
         if status.code != code_pb2.OK:
             context.abort_with_status(rpc_status.to_status(status))
 
-        logger.info("A worker returned the result of task %i.", request.task_id)
+        self.logger.info("A worker returned the result of task %i.", request.task_id)
 
         return empty_pb2.Empty()
 
@@ -109,6 +115,7 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
 
                 return status_pb2.Status(code=code_pb2.OK)
             except grpc.RpcError:
+                self.logger.info("Could not dispatch task %s to worker %s", task, addr)
                 return status_pb2.Status(
                     code=code_pb2.UNKNOWN, message="WORKER_RECEIVE_TASK_FAILED"
                 )
@@ -127,6 +134,7 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
 
                 return status_pb2.Status(code=code_pb2.OK), address
             except grpc.RpcError:
+                self.logger.info("Could not retrieve worker for task %s", type)
                 return status_pb2.Status(
                     code=code_pb2.NOT_FOUND, message="WORKER_LOOKUP_FAILED"
                 ), None
@@ -154,7 +162,7 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
                     stub = nameserver_pb2_grpc.NameServiceStub(channel)
                     _ = stub.register(
                         nameserver_pb2.Service(
-                            name=DISPATCHER_NAME,
+                            name=self.dispatcher_name,
                             address=common_pb2.ServiceIPWithPort(
                                 ip=self.server_address.rsplit(":")[0],
                                 port=int(self.server_address.rsplit(":")[1]),
@@ -163,19 +171,19 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
                     )
                     break
                 except grpc.RpcError as e:
-                    logger.warning(
-                        "Could not register at the name server. The error was \"%s\"",
+                    self.logger.warning(
+                        'Could not register dispatcher at the name server. The error was "%s"',
                         e.details(),
                     )
-                    logger.warning("Trying again ...")
+                    self.logger.warning("Trying again ...")
                     time.sleep(3.0)
                     continue
 
         self._registered = True
-        logger.info(
+        self.logger.info(
             "Registered self with address %s and name %s at the name server",
             self.server_address,
-            DISPATCHER_NAME,
+            self.dispatcher_name,
         )
 
     def unregister_at_name_server(self):
@@ -185,13 +193,14 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
         with grpc.insecure_channel(self.name_service_address) as channel:
             try:
                 stub = nameserver_pb2_grpc.NameServiceStub(channel)
-                _ = stub.unregister(wrappers_pb2.StringValue(value=DISPATCHER_NAME))
+                _ = stub.unregister(
+                    wrappers_pb2.StringValue(value=self.dispatcher_name)
+                )
                 self._registered = False
-                logger.info(
+                self.logger.info(
                     "Unegistered self with address %s and name %s at the name server",
                     self.server_address,
-                    DISPATCHER_NAME,
+                    self.dispatcher_name,
                 )
             except grpc.RpcError:
-                logger.warning("Could not unregister from the name server.")
-
+                self.logger.warning("Could not unregister from the name server.")

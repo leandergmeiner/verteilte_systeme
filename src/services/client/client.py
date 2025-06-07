@@ -1,3 +1,5 @@
+import logging
+
 import grpc
 from google.protobuf import empty_pb2, wrappers_pb2
 
@@ -9,6 +11,8 @@ from src.common.rpc import (
     worker_pb2_grpc,
 )
 from src.services import DISPATCHER_NAME
+
+logger = logging.getLogger("client")
 
 
 def get_servicer_address(name_service_address: str, service_type: str):
@@ -30,9 +34,13 @@ def execute_command(command: str, *args: str, name_service_address: str = "[::]:
 
     dispatcher_address = get_servicer_address(name_service_address, DISPATCHER_NAME)
     with grpc.insecure_channel(dispatcher_address) as channel:
-        stub = dispatcher_pb2_grpc.DispatchStub(channel)
-        task_request = common_pb2.ExecuteTaskRequest(type=command, payload=args)
-        task_id: wrappers_pb2.UInt32Value = stub.execute(task_request)
+        try:
+            stub = dispatcher_pb2_grpc.DispatchStub(channel)
+            task_request = common_pb2.ExecuteTaskRequest(type=command, payload=args)
+            task_id: wrappers_pb2.UInt32Value = stub.execute(task_request)
+        except grpc.RpcError as e:
+            print("Executing the task failed with message", e.details())
+            return
 
         while True:  # Poll for results
             try:
@@ -43,10 +51,13 @@ def execute_command(command: str, *args: str, name_service_address: str = "[::]:
                 if (
                     e.code() == grpc.StatusCode.NOT_FOUND
                 ):  # Resource is not yet available
-                    print("Got here")
                     continue
                 else:
-                    print(e.message())
+                    print(
+                        f"Retrieving result of task {task_id} failed with message",
+                        e.details(),
+                    )
+                    return
 
 
 def worker_help(command: str, name_service_address: str = "[::]:50051"):
