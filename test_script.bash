@@ -19,8 +19,6 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     worker_address_prefix="localhost:5006"
 fi
->>>>>>> Stashed changes
-=======
 worker_address_prefix="localhost:5006"  # Changed from [::]:5006 for macOS compatibility
 worker_tasks=(sum hash reverse strlen floor softmax)
 worker_pids=()
