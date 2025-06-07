@@ -29,7 +29,7 @@ def get_servicer_address(name_service_address: str, service_type: str):
             raise KeyError("Dispatcher service could not be found")
 
 
-def execute_command(command: str, *args: str, name_service_address: str = "[::]:50051"):
+def execute_command(command: str, *args: str, name_service_address: str = "localhost:50051"):
     args = map(str, args)
 
     dispatcher_address = get_servicer_address(name_service_address, DISPATCHER_NAME)
