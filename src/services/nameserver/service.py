@@ -8,18 +8,14 @@ from grpc_status import rpc_status
 
 from src.common.rpc import common_pb2, nameserver_pb2, nameserver_pb2_grpc
 
-logger = logging.getLogger()
-
-logger = logging.getLogger()
-
-logger = logging.getLogger()
-
-
 class NameServiceServicer(nameserver_pb2_grpc.NameServiceServicer):
     def __init__(self):
         self.name_address_lookup: dict[
             str, tuple[ipaddress.IPv4Address | ipaddress.IPv6Address, int]
         ] = {}
+        
+        self.logger = logging.getLogger("nameserver")
+        
 
     def validate_name(self, name: str):
         if not name.isascii():
@@ -71,7 +67,7 @@ class NameServiceServicer(nameserver_pb2_grpc.NameServiceServicer):
                 )
             )
 
-        logger.info(
+        self.logger.info(
             "The service worker %s with the type %s has been registered.",
             f"{ip}:{port}",
             name,
@@ -89,7 +85,7 @@ class NameServiceServicer(nameserver_pb2_grpc.NameServiceServicer):
         # Fail silently if service is unknown
         if name in self.name_address_lookup:
             del self.name_address_lookup[name]
-            logger.info("Unregistered service worker of type %s.", name)
+            self.logger.info("Unregistered service worker of type %s.", name)
 
         return empty_pb2.Empty()
 
@@ -104,7 +100,7 @@ class NameServiceServicer(nameserver_pb2_grpc.NameServiceServicer):
                 )
             )
 
-        logger.info(
+        self.logger.info(
             "The address for the service worker of type %s has been requested.", name
         )
 
