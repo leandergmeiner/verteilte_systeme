@@ -26,6 +26,10 @@ services:
     volumes:
       - shared:/logs
     restart: no
+    # Start dispatcher when nameserver is already running
+    depends_on:
+      - nameserver
+
 
   worker1:
     image: "worker"
@@ -39,6 +43,10 @@ services:
       - shared:/logs
     command: ["sum", "0.0.0.0:50053", "nameserver:50051", "sum:50053"]
     restart: no
+    # Start workers when nameserver and dispatcher are already running
+    depends_on:
+      - nameserver
+      - dispatcher
 
   worker2:
     image: "worker"
@@ -52,6 +60,10 @@ services:
       - shared:/logs
     command: ["hash", "0.0.0.0:50054", "nameserver:50051", "hash:50053"]
     restart: no
+    # Start workers when nameserver and dispatcher are already running
+    depends_on:
+      - nameserver
+      - dispatcher
 
   worker3:
     image: "worker"
@@ -65,6 +77,10 @@ services:
       - shared:/logs
     command: ["reverse", "0.0.0.0:50055", "nameserver:50051", "reverse:50053"]
     restart: no
+    # Start workers when nameserver and dispatcher are already running
+    depends_on:
+      - nameserver
+      - dispatcher
 
   worker4:
     image: "worker"
@@ -78,6 +94,10 @@ services:
       - shared:/logs
     command: ["strlen", "0.0.0.0:50056", "nameserver:50051", "strlen:50053"]
     restart: no
+    # Start workers when nameserver and dispatcher are already running
+    depends_on:
+      - nameserver
+      - dispatcher
 
   worker5:
     image: "worker"
@@ -91,6 +111,10 @@ services:
       - shared:/logs
     command: ["floor", "0.0.0.0:50057", "nameserver:50051", "floor:50053"]
     restart: no
+    # Start workers when nameserver and dispatcher are already running
+    depends_on:
+      - nameserver
+      - dispatcher
 
   worker6:
     image: "worker"
@@ -104,6 +128,10 @@ services:
       - shared:/logs
     command: ["softmax", "0.0.0.0:50058", "nameserver:50051", "softmax:50053"]
     restart: no
+    # Start workers when nameserver and dispatcher are already running
+    depends_on:
+      - nameserver
+      - dispatcher
 
 volumes:
   shared:
