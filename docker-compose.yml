@@ -1,0 +1,113 @@
+version: "3.9"
+
+services:
+
+  nameserver:
+    image: "nameserver"
+    # To prevent docker from trying to pull the images from docker hub
+    pull_policy: never
+    container_name: "nameserver"
+    networks:
+      - verteilte-systeme
+    ports:
+      - "50051:50051"
+    volumes:
+      - shared:/logs
+    restart: no
+
+  dispatcher:
+    image: "dispatcher"
+    pull_policy: never
+    container_name: "dispatcher"
+    networks:
+      - verteilte-systeme
+    ports:
+      - "50052:50052"
+    volumes:
+      - shared:/logs
+    restart: no
+
+  worker1:
+    image: "worker"
+    pull_policy: never
+    container_name: "sum"
+    networks:
+      - verteilte-systeme
+    ports:
+      - "50053:50053"
+    volumes:
+      - shared:/logs
+    command: ["sum", "0.0.0.0:50053", "nameserver:50051", "sum:50053"]
+    restart: no
+
+  worker2:
+    image: "worker"
+    pull_policy: never
+    container_name: "hash"
+    networks:
+      - verteilte-systeme
+    ports:
+      - "50054:50054"
+    volumes:
+      - shared:/logs
+    command: ["hash", "0.0.0.0:50054", "nameserver:50051", "sum:50053"]
+    restart: no
+
+  worker3:
+    image: "worker"
+    pull_policy: never
+    container_name: "reverse"
+    networks:
+      - verteilte-systeme
+    ports:
+      - "50055:50055"
+    volumes:
+      - shared:/logs
+    command: ["reverse", "0.0.0.0:50055", "nameserver:50051", "sum:50053"]
+    restart: no
+
+  worker4:
+    image: "worker"
+    pull_policy: never
+    container_name: "strlen"
+    networks:
+      - verteilte-systeme
+    ports:
+      - "50056:50056"
+    volumes:
+      - shared:/logs
+    command: ["strlen", "0.0.0.0:50056", "nameserver:50051", "sum:50053"]
+    restart: no
+
+  worker5:
+    image: "worker"
+    pull_policy: never
+    container_name: "floor"
+    networks:
+      - verteilte-systeme
+    ports:
+      - "50057:50057"
+    volumes:
+      - shared:/logs
+    command: ["floor", "0.0.0.0:50057", "nameserver:50051", "sum:50053"]
+    restart: no
+
+  worker6:
+    image: "worker"
+    pull_policy: never
+    container_name: "softmax"
+    networks:
+      - verteilte-systeme
+    ports:
+      - "50058:50058"
+    volumes:
+      - shared:/logs
+    command: ["softmax", "0.0.0.0:50058", "nameserver:50051", "sum:50053"]
+    restart: no
+
+volumes:
+  shared:
+
+networks:
+  verteilte-systeme:
+    external: false
