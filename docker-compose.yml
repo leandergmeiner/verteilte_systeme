@@ -133,6 +133,102 @@ services:
       - nameserver
       - dispatcher
 
+  client1:
+    image: "client"
+    pull_policy: never
+    container_name: "sum-client"
+    networks:
+      - verteilte-systeme
+    volumes:
+      - shared:/logs
+    restart: no
+    command: ["sum", "10", "20", "30", "--name_service_address", "nameserver:50051"]
+    # Start client for task sum only when worker for task sum is running
+    depends_on:
+      - nameserver
+      - dispatcher
+      - worker1
+
+  client2:
+    image: "client"
+    pull_policy: never
+    container_name: "hash-client"
+    networks:
+      - verteilte-systeme
+    volumes:
+      - shared:/logs
+    restart: no
+    command: ["hash", "Hello World", "--name_service_address", "nameserver:50051"]
+    # Start client for task sum only when worker for task sum is running
+    depends_on:
+      - nameserver
+      - dispatcher
+      - worker2
+
+  client3:
+    image: "client"
+    pull_policy: never
+    container_name: "reverse-client"
+    networks:
+      - verteilte-systeme
+    volumes:
+      - shared:/logs
+    restart: no
+    command: [ "reverse", "Hello", "World", "--name_service_address", "nameserver:50051" ]
+    # Start client for task sum only when worker for task sum is running
+    depends_on:
+      - nameserver
+      - dispatcher
+      - worker3
+
+  client4:
+    image: "client"
+    pull_policy: never
+    container_name: "strlen-client"
+    networks:
+      - verteilte-systeme
+    volumes:
+      - shared:/logs
+    restart: no
+    command: ["strlen", "Hello", "World", "--name_service_address", "nameserver:50051"]
+    # Start client for task sum only when worker for task sum is running
+    depends_on:
+      - nameserver
+      - dispatcher
+      - worker4
+
+  client5:
+    image: "client"
+    pull_policy: never
+    container_name: "floor-client"
+    networks:
+      - verteilte-systeme
+    volumes:
+      - shared:/logs
+    restart: no
+    command: ["floor", "1.5", "2.5", "3.5", "--name_service_address", "nameserver:50051"]
+    # Start client for task sum only when worker for task sum is running
+    depends_on:
+      - nameserver
+      - dispatcher
+      - worker5
+
+  client6:
+    image: "client"
+    pull_policy: never
+    container_name: "softmax-client"
+    networks:
+      - verteilte-systeme
+    volumes:
+      - shared:/logs
+    restart: no
+    command: ["softmax", "1.2", "0.6", "0.2", "--name_service_address", "nameserver:50051"]
+    # Start client for task sum only when worker for task sum is running
+    depends_on:
+      - nameserver
+      - dispatcher
+      - worker6
+
 volumes:
   shared:
 
