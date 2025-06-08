@@ -24,4 +24,4 @@ RUN poetry install
 ENTRYPOINT ["poetry", "run", "python3", "main.py", "exec"]
 
 # Default arguments
-CMD ["sum", "10", "20", "30"]
+CMD ["sum", "10", "20", "30", "--name_service_address", "nameserver:50051"]

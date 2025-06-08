@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Create the docker network to later allow all containers to talk to each other
 docker network create verteilte-systeme
 
 docker build -t nameserver --file ./dockerfiles/nameserver.Dockerfile .
