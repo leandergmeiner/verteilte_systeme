@@ -2,6 +2,9 @@
 
 ## Ausführung mit Docker
 
+Tests haben gezeigt, dass das verwendete docker Netzwerk nur auf Linux und Unix Systemen (u. a. MacOS) funktioniert, deshalb
+werden offiziell nur MacOS und Linux unterstütz.
+
 Das Repo enthält alle Teile der Prüfungsleistung. Da diese in verteilten Dockerkontainern laufen sollen, kann man nicht
 nur ein **Dockerfile** wie gewohnt bauen und ausführen. Die **Dockerfiles** befinden sich im Ordner 
 [dockerfiles](./dockerfiles) sie müssen jedoch aus dem Wurzelverzeichnis gebaut werden (da dockers *COPY* Befehl nicht
