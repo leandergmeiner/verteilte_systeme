@@ -58,7 +58,7 @@ services:
       - "50054:50054"
     volumes:
       - shared:/logs
-    command: ["hash", "0.0.0.0:50054", "nameserver:50051", "hash:50053"]
+    command: ["hash", "0.0.0.0:50054", "nameserver:50051", "hash:50054"]
     restart: no
     # Start workers when nameserver and dispatcher are already running
     depends_on:
@@ -75,7 +75,7 @@ services:
       - "50055:50055"
     volumes:
       - shared:/logs
-    command: ["reverse", "0.0.0.0:50055", "nameserver:50051", "reverse:50053"]
+    command: ["reverse", "0.0.0.0:50055", "nameserver:50051", "reverse:50055"]
     restart: no
     # Start workers when nameserver and dispatcher are already running
     depends_on:
@@ -92,7 +92,7 @@ services:
       - "50056:50056"
     volumes:
       - shared:/logs
-    command: ["strlen", "0.0.0.0:50056", "nameserver:50051", "strlen:50053"]
+    command: ["strlen", "0.0.0.0:50056", "nameserver:50051", "strlen:50056"]
     restart: no
     # Start workers when nameserver and dispatcher are already running
     depends_on:
@@ -109,7 +109,7 @@ services:
       - "50057:50057"
     volumes:
       - shared:/logs
-    command: ["floor", "0.0.0.0:50057", "nameserver:50051", "floor:50053"]
+    command: ["floor", "0.0.0.0:50057", "nameserver:50051", "floor:50057"]
     restart: no
     # Start workers when nameserver and dispatcher are already running
     depends_on:
@@ -126,7 +126,7 @@ services:
       - "50058:50058"
     volumes:
       - shared:/logs
-    command: ["softmax", "0.0.0.0:50058", "nameserver:50051", "softmax:50053"]
+    command: ["softmax", "0.0.0.0:50058", "nameserver:50051", "softmax:50058"]
     restart: no
     # Start workers when nameserver and dispatcher are already running
     depends_on:
