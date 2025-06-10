@@ -14,7 +14,15 @@ dispatcher_pid=$!
 echo Dispatcher PID $dispatcher_pid
 sleep 0.05
 
+<<<<<<< Updated upstream
 worker_address_prefix="[::]:5006"
+=======
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    worker_address_prefix="[::]:5006"
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    worker_address_prefix="localhost:5006"
+fi
+>>>>>>> Stashed changes
 worker_tasks=(sum hash reverse strlen floor softmax)
 worker_pids=()
 

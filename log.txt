@@ -24,17 +24,17 @@ INFO:nameserver:The service worker [::]:50064 with the type floor has been regis
 INFO:worker_floor:Registered self with address [::]:50064 and name floor at the name server
 INFO:root:Started worker with type floor, waiting for connections.
 INFO:nameserver:The address for the service worker of type dispatcher has been requested.
-INFO:worker_softmax:Started worker with task type softmax
-INFO:nameserver:The service worker [::]:50065 with the type softmax has been registered.
-INFO:worker_softmax:Registered self with address [::]:50065 and name softmax at the name server
 INFO:nameserver:The address for the service worker of type sum has been requested.
 INFO:dispatcher:Dispatching task of type sum to worker [::]:50060
-INFO:root:Started worker with type softmax, waiting for connections.
 INFO:worker_sum:Execution of task with ID 1 was requested
 INFO:nameserver:The address for the service worker of type dispatcher has been requested.
 INFO:dispatcher:A worker returned the result of task 1.
 INFO:worker_sum:Sent task result to dispatcher
 INFO:dispatcher:A client requested result of task 1.
+INFO:worker_softmax:Started worker with task type softmax
+INFO:nameserver:The service worker [::]:50065 with the type softmax has been registered.
+INFO:worker_softmax:Registered self with address [::]:50065 and name softmax at the name server
+INFO:root:Started worker with type softmax, waiting for connections.
 INFO:nameserver:The address for the service worker of type dispatcher has been requested.
 INFO:nameserver:The address for the service worker of type hash has been requested.
 INFO:dispatcher:Dispatching task of type hash to worker [::]:50061
