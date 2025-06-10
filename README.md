@@ -10,11 +10,15 @@ nur ein **Dockerfile** wie gewohnt bauen und ausführen. Die **Dockerfiles** bef
 [dockerfiles](./dockerfiles) sie müssen jedoch aus dem Wurzelverzeichnis gebaut werden (da dockers *COPY* Befehl nicht
 außerhalb des contexts operieren kann). Um diese zu bauen, sollte das script [docker_test_script.sh](docker_test_script.sh)
 verwendet werden.
-Anschließend lassen sich die container mit der [docker-compose](docker-compose.yml) mit dem Befehl ```docker compose up```
+Anschließend lassen sich die container mit der [docker-compose](docker-compose.yml) mit dem Befehl `docker compose up`
 ausführen. 
 
-Um die container im Hintergrund auszuführen wird ```docker compose up -d``` verwendet und um diese wieder zu beenden
-und die Container aufzuräumen: ```docker compose down --remove-orphans```.
+Um die container im Hintergrund auszuführen wird `docker compose up -d` verwendet und um diese wieder zu beenden
+und die Container aufzuräumen: `docker compose down --remove-orphans`.
+
+### Gemeinsame Logs
+Die Container schreiben ihre logs in dem gemeinsamen Volume `/logs`. Man kann diese einsehen, indem man es aus einem
+beliebigen Container kopiert beispielsweise mit `docker cp nameserver:/logs ./logs-nameserver`.
 
 ## Ausführung lokal
 Um die lokale Ausführung zu testen kann einfach das [test Script](test_script.bash) verwendet werden.

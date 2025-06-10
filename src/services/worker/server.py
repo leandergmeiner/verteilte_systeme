@@ -14,6 +14,16 @@ def create_server(
     name_server_address: str | None = "0.0.0.0:50051",
     registered_server_address: str = "", # Server address given to the nameserver during registration
 ):
+    log_file = f"/logs/{task_type}-worker.txt"
+    # Delete old logs
+    if os.path.exists(log_file):
+        os.remove(log_file)
+
+    logging.basicConfig(level=logging.INFO,
+                        filename=log_file,
+                        filemode="a",
+                        )
+
     # if the server address to register to the name server does not differ it should be equal to the server address
     if not registered_server_address:
         registered_server_address = server_address
