@@ -1,4 +1,5 @@
 import logging
+import os
 
 import grpc
 from google.protobuf import empty_pb2, wrappers_pb2
@@ -13,7 +14,6 @@ from src.common.rpc import (
 from src.services import DISPATCHER_NAME
 
 logger = logging.getLogger("client")
-
 
 def get_servicer_address(name_service_address: str, service_type: str):
     with grpc.insecure_channel(name_service_address) as channel:
@@ -30,6 +30,16 @@ def get_servicer_address(name_service_address: str, service_type: str):
 
 
 def execute_command(command: str, *args: str, name_service_address: str = "localhost:50051"):
+    log_file = f"/logs/client-{command}-log.txt"
+    # Delete old logs
+    if os.path.exists(log_file):
+        os.remove(log_file)
+
+    logging.basicConfig(level=logging.INFO,
+                        filename=log_file,
+                        filemode="a",
+                        )
+
     args = map(str, args)
 
     dispatcher_address = get_servicer_address(name_service_address, DISPATCHER_NAME)
@@ -39,13 +49,13 @@ def execute_command(command: str, *args: str, name_service_address: str = "local
             task_request = common_pb2.ExecuteTaskRequest(type=command, payload=args)
             task_id: wrappers_pb2.UInt32Value = stub.execute(task_request)
         except grpc.RpcError as e:
-            print("Executing the task failed with message", e.details())
+            logger.info("Executing the task failed with message: %s", e.details())
             return
 
         while True:  # Poll for results
             try:
                 results: common_pb2.TaskResult = stub.get_task_result(task_id)
-                print("Result: ", " ".join(results.payload))
+                logger.info("Result: %s", " ".join(results.payload))
                 break
             except grpc.RpcError as e:
                 if (
@@ -53,14 +63,14 @@ def execute_command(command: str, *args: str, name_service_address: str = "local
                 ):  # Resource is not yet available
                     continue
                 else:
-                    print(
-                        f"Retrieving result of task {task_id} failed with message",
+                    logger.warning(
+                        f"Retrieving result of task {task_id} failed with message: %s",
                         e.details(),
                     )
                     return
 
 
-def worker_help(command: str, name_service_address: str = "[::]:50051"):
+def worker_help(command: str, name_service_address: str = "localhost:50051"):
     worker_address = get_servicer_address(name_service_address, command)
 
     with grpc.insecure_channel(worker_address) as channel:

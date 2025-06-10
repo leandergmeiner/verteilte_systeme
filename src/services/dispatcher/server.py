@@ -14,6 +14,16 @@ def create_server(
     server_address: str = "0.0.0.0:50052",
     registered_server_address: str = "", # Server address given to the nameserver during registration
 ):
+    log_file = "/logs/dispatcher-log.txt"
+    # Delete old logs
+    if os.path.exists(log_file):
+        os.remove(log_file)
+
+    logging.basicConfig(level=logging.INFO,
+                        filename=log_file,
+                        filemode="a",
+                        )
+
     name_server_address = name_server_address or os.environ.get("NAME_SERVICE")
 
     # if the server address to register to the name server does not differ it should be equal to the server address
