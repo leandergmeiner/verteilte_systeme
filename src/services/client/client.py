@@ -55,7 +55,11 @@ def execute_command(command: str, *args: str, name_service_address: str = "local
         while True:  # Poll for results
             try:
                 results: common_pb2.TaskResult = stub.get_task_result(task_id)
-                logger.info("Result: %s", " ".join(results.payload))
+                
+                if results.valid:
+                    logger.info("Execution of task failed.")
+                else:
+                    logger.info("Result: %s", " ".join(results.payload))
                 break
             except grpc.RpcError as e:
                 if (
@@ -69,6 +73,7 @@ def execute_command(command: str, *args: str, name_service_address: str = "local
                     )
                     return
 
+        _ = stub.delete_task_result(task_id)
 
 def worker_help(command: str, name_service_address: str = "localhost:50051"):
     worker_address = get_servicer_address(name_service_address, command)

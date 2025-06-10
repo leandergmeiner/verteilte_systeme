@@ -1,0 +1,27 @@
+INFO:dispatcher:Dispacher started. Name server address is nameserver:50051
+INFO:dispatcher:Registered self with address dispatcher:50052 and name dispatcher at the name server
+INFO:root:Started Dispatcher, waiting for connections.
+INFO:dispatcher:Dispatching task of type reverse to worker reverse:50055
+INFO:dispatcher:Dispatching task of type floor to worker floor:50057
+INFO:dispatcher:Dispatching task of type sum to worker sum:50053
+INFO:dispatcher:Dispatching task of type softmax to worker softmax:50058
+INFO:dispatcher:A worker returned the result of task 1.
+INFO:dispatcher:A worker returned the result of task 2.
+INFO:dispatcher:A worker returned the result of task 3.
+INFO:dispatcher:A client requested result of task 1.
+INFO:dispatcher:A client requested result of task 2.
+INFO:dispatcher:A worker returned the result of task 4.
+INFO:dispatcher:A client requested the deletion of the result of task 1.
+INFO:dispatcher:A client requested the deletion of the result of task 2.
+INFO:dispatcher:A client requested result of task 3.
+INFO:dispatcher:A client requested result of task 4.
+INFO:dispatcher:A client requested the deletion of the result of task 3.
+INFO:dispatcher:A client requested the deletion of the result of task 4.
+INFO:dispatcher:Dispatching task of type strlen to worker strlen:50056
+INFO:dispatcher:A worker returned the result of task 5.
+INFO:dispatcher:A client requested result of task 5.
+INFO:dispatcher:A client requested the deletion of the result of task 5.
+INFO:dispatcher:Dispatching task of type hash to worker hash:50054
+INFO:dispatcher:A worker returned the result of task 6.
+INFO:dispatcher:A client requested result of task 6.
+INFO:dispatcher:A client requested the deletion of the result of task 6.

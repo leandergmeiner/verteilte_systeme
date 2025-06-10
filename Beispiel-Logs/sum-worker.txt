@@ -1,0 +1,5 @@
+INFO:worker_sum:Started worker with task type sum
+INFO:worker_sum:Registered self with address sum:50053 and name sum at the name server
+INFO:root:Started worker with type sum, waiting for connections.
+INFO:worker_sum:Execution of task with ID 3 was requested
+INFO:worker_sum:Sent task result to dispatcher

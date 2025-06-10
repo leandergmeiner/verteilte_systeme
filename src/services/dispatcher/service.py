@@ -89,9 +89,26 @@ class DispatcherService(dispatcher_pb2_grpc.DispatchServicer):
 
         self.logger.info("A client requested result of task %i.", task_id)
         result = common_pb2.TaskResult(task_id=task_id, payload=self.results[task_id])
-        del self.results[task_id]
-
         return result
+    
+    def delete_task_result(
+        self, request: wrappers_pb2.UInt32Value, context: grpc.ServicerContext
+    ):
+        """CLIENT -> DISPATCHER: The client requests the deletion of the task result"""
+        task_id = request.value
+
+        if task_id not in self.results:
+            context.abort_with_status(
+                rpc_status.to_status(
+                    status_pb2.Status(
+                        code=code_pb2.NOT_FOUND, message="UNKNOWN_TASK_ID"
+                    )
+                )
+            )
+        
+        self.logger.info("A client requested the deletion of the result of task %i.", task_id)
+        del self.results[task_id]
+        return empty_pb2.Empty()
 
     def return_result(self, request: common_pb2.Task, context: grpc.ServicerContext):
         """WORKER -> DISPATCH: Returns result of computation"""

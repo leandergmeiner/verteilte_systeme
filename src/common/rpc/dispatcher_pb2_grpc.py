@@ -46,6 +46,11 @@ class DispatchStub(object):
                 request_serializer=google_dot_protobuf_dot_wrappers__pb2.UInt32Value.SerializeToString,
                 response_deserializer=common__pb2.TaskResult.FromString,
                 _registered_method=True)
+        self.delete_task_result = channel.unary_unary(
+                '/services.Dispatch/delete_task_result',
+                request_serializer=google_dot_protobuf_dot_wrappers__pb2.UInt32Value.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                _registered_method=True)
         self.return_result = channel.unary_unary(
                 '/services.Dispatch/return_result',
                 request_serializer=common__pb2.TaskResult.SerializeToString,
@@ -64,6 +69,13 @@ class DispatchServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def get_task_result(self, request, context):
+        """CLIENT -> DISPATCHER: Client requests result from Dispatcher for task
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def delete_task_result(self, request, context):
         """CLIENT -> DISPATCHER: Client requests result from Dispatcher for task
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -89,6 +101,11 @@ def add_DispatchServicer_to_server(servicer, server):
                     servicer.get_task_result,
                     request_deserializer=google_dot_protobuf_dot_wrappers__pb2.UInt32Value.FromString,
                     response_serializer=common__pb2.TaskResult.SerializeToString,
+            ),
+            'delete_task_result': grpc.unary_unary_rpc_method_handler(
+                    servicer.delete_task_result,
+                    request_deserializer=google_dot_protobuf_dot_wrappers__pb2.UInt32Value.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
             'return_result': grpc.unary_unary_rpc_method_handler(
                     servicer.return_result,
@@ -150,6 +167,33 @@ class Dispatch(object):
             '/services.Dispatch/get_task_result',
             google_dot_protobuf_dot_wrappers__pb2.UInt32Value.SerializeToString,
             common__pb2.TaskResult.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def delete_task_result(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/services.Dispatch/delete_task_result',
+            google_dot_protobuf_dot_wrappers__pb2.UInt32Value.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options,
             channel_credentials,
             insecure,
