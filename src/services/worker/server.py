@@ -11,7 +11,7 @@ logger = logging.getLogger()
 def create_server(
     task_type: str,
     server_address: str,  # Can't determine the address
-    name_server_address: str | None = "localhost:50051",
+    name_server_address: str | None = "0.0.0.0:50051",
     registered_server_address: str = "", # Server address given to the nameserver during registration
 ):
     # if the server address to register to the name server does not differ it should be equal to the server address

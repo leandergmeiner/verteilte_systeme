@@ -10,8 +10,8 @@ logger = logging.getLogger()
 
 
 def create_server(
-    name_server_address: str | None = "localhost:50051",
-    server_address: str = "localhost:50052",
+    name_server_address: str | None = "0.0.0.0:50051",
+    server_address: str = "0.0.0.0:50052",
     registered_server_address: str = "", # Server address given to the nameserver during registration
 ):
     name_server_address = name_server_address or os.environ.get("NAME_SERVICE")
