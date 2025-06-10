@@ -14,11 +14,7 @@ dispatcher_pid=$!
 echo "Dispatcher PID $dispatcher_pid"
 sleep 0.05
 
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    worker_address_prefix="[::]:5006"
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-    worker_address_prefix="localhost:5006"
-fi
+worker_address_prefix="localhost:5006"  # Changed from [::]:5006 for macOS compatibility
 worker_tasks=(sum hash reverse strlen floor softmax)
 worker_pids=()
 
