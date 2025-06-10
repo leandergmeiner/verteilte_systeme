@@ -1,5 +1,5 @@
 INFO:worker_hash:Started worker with task type hash
 INFO:worker_hash:Registered self with address hash:50054 and name hash at the name server
 INFO:root:Started worker with type hash, waiting for connections.
-INFO:worker_hash:Execution of task with ID 6 was requested
+INFO:worker_hash:Execution of task with ID 2 was requested
 INFO:worker_hash:Sent task result to dispatcher

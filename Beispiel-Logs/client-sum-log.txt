@@ -1,1 +1,2 @@
+DEBUG:client:Executing command sum with args ('10', '20', '30').
 INFO:client:Result: 60

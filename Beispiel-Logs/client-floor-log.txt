@@ -1,1 +1,2 @@
+DEBUG:client:Executing command floor with args ('1.5', '2.5', '3.5').
 INFO:client:Result: 1 2 3

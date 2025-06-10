@@ -35,13 +35,13 @@ def execute_command(command: str, *args: str, name_service_address: str = "local
     if os.path.exists(log_file):
         os.remove(log_file)
 
-    logging.basicConfig(level=logging.INFO,
+    logging.basicConfig(level=logging.DEBUG,
                         filename=log_file,
                         filemode="a",
                         )
 
-    args = map(str, args)
-
+    args = tuple(map(str, args))
+    logger.debug("Executing command %s with args %s.", command, args)
     dispatcher_address = get_servicer_address(name_service_address, DISPATCHER_NAME)
     with grpc.insecure_channel(dispatcher_address) as channel:
         try:
