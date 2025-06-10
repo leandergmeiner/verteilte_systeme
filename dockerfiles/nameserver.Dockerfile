@@ -22,4 +22,4 @@ RUN pip3 install --no-cache-dir poetry
 
 RUN poetry install
 
-ENTRYPOINT ["poetry", "run", "python3", "main.py", "nameserver", ">>", "/logs/nameserver.log 2>&1"]
+ENTRYPOINT ["poetry", "run", "python3", "main.py", "nameserver"]

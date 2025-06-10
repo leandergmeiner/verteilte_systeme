@@ -308,4 +308,4 @@ volumes:
 
 networks:
   verteilte-systeme:
-    external: false
+    external: true
