@@ -11,7 +11,8 @@ RUN apk update && apk add --no-cache \
     python3 \
     py3-pip \
     py3-virtualenv \
-    bash
+    bash \
+    netcat-openbsd
 
 # Create python venv (to use pip without Errors)
 RUN python3 -m venv /venv

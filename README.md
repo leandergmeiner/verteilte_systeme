@@ -2,13 +2,13 @@
 
 ## Ausführung mit Docker
 
-Tests haben gezeigt, dass das verwendete docker Netzwerk nur auf Linux und Unix Systemen (u. a. MacOS) funktioniert, deshalb
-werden offiziell nur MacOS und Linux unterstütz.
+Das verwendete docker script und die [docker-compose.yaml](docker-compose.yml) wurden nur auf Linux und MacOS erfolgreich getestet,
+somit kann keine Windows kompatibilität garantiert werden (da es auf Windows manchmal zu Problemen mit docker networks kommen kann).
 
 Das Repo enthält alle Teile der Prüfungsleistung. Da diese in verteilten Dockerkontainern laufen sollen, kann man nicht
 nur ein **Dockerfile** wie gewohnt bauen und ausführen. Die **Dockerfiles** befinden sich im Ordner 
 [dockerfiles](./dockerfiles) sie müssen jedoch aus dem Wurzelverzeichnis gebaut werden (da dockers *COPY* Befehl nicht
-außerhalb des contexts operieren kann). Um diese zu bauen sollte das script [docker_test_script.sh](docker_test_script.sh)
+außerhalb des contexts operieren kann). Um diese zu bauen, sollte das script [docker_test_script.sh](docker_test_script.sh)
 verwendet werden.
 Anschließend lassen sich die container mit der [docker-compose](docker-compose.yml) mit dem Befehl ```docker compose up```
 ausführen. 

@@ -11,7 +11,8 @@ RUN apk update && apk add --no-cache \
     python3 \
     py3-pip \
     py3-virtualenv \
-    bash
+    bash \
+    netcat-openbsd
 
 # Create python venv (to use pip without Errors)
 RUN python3 -m venv /venv
@@ -21,4 +22,4 @@ RUN pip3 install --no-cache-dir poetry
 
 RUN poetry install
 
-ENTRYPOINT ["poetry", "run", "python3", "main.py", "nameserver"]
+ENTRYPOINT ["poetry", "run", "python3", "main.py", "nameserver", ">>", "/logs/nameserver.log 2>&1"]

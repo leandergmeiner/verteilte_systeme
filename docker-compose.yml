@@ -14,6 +14,12 @@ services:
     volumes:
       - shared:/logs
     restart: no
+    # Healthcheck to make sure service is available before it is requested
+    healthcheck:
+      test: [ "CMD", "sh", "-c", "nc -z localhost 50051" ]
+      interval: 2s
+      timeout: 2s
+      retries: 10
 
   dispatcher:
     image: "dispatcher"
@@ -27,9 +33,14 @@ services:
       - shared:/logs
     restart: no
     # Start dispatcher when nameserver is already running
+    healthcheck:
+      test: [ "CMD", "sh", "-c", "nc -z localhost 50052" ]
+      interval: 2s
+      timeout: 2s
+      retries: 10
     depends_on:
-      - nameserver
-
+      nameserver:
+        condition: service_healthy
 
   worker1:
     image: "worker"
@@ -44,9 +55,17 @@ services:
     command: ["sum", "0.0.0.0:50053", "nameserver:50051", "sum:50053"]
     restart: no
     # Start workers when nameserver and dispatcher are already running
+    healthcheck:
+      test: [ "CMD", "sh", "-c", "nc -z localhost 50053" ]
+      interval: 2s
+      timeout: 2s
+      retries: 10
     depends_on:
-      - nameserver
-      - dispatcher
+      nameserver:
+        condition: service_healthy
+      dispatcher:
+        condition: service_healthy
+
 
   worker2:
     image: "worker"
@@ -61,9 +80,17 @@ services:
     command: ["hash", "0.0.0.0:50054", "nameserver:50051", "hash:50054"]
     restart: no
     # Start workers when nameserver and dispatcher are already running
+    healthcheck:
+      test: [ "CMD", "sh", "-c", "nc -z localhost 50054" ]
+      interval: 2s
+      timeout: 2s
+      retries: 10
     depends_on:
-      - nameserver
-      - dispatcher
+      nameserver:
+        condition: service_healthy
+      dispatcher:
+        condition: service_healthy
+
 
   worker3:
     image: "worker"
@@ -78,9 +105,17 @@ services:
     command: ["reverse", "0.0.0.0:50055", "nameserver:50051", "reverse:50055"]
     restart: no
     # Start workers when nameserver and dispatcher are already running
+    healthcheck:
+      test: [ "CMD", "sh", "-c", "nc -z localhost 50055" ]
+      interval: 2s
+      timeout: 2s
+      retries: 10
     depends_on:
-      - nameserver
-      - dispatcher
+      nameserver:
+        condition: service_healthy
+      dispatcher:
+        condition: service_healthy
+
 
   worker4:
     image: "worker"
@@ -95,9 +130,16 @@ services:
     command: ["strlen", "0.0.0.0:50056", "nameserver:50051", "strlen:50056"]
     restart: no
     # Start workers when nameserver and dispatcher are already running
+    healthcheck:
+      test: [ "CMD", "sh", "-c", "nc -z localhost 50056" ]
+      interval: 2s
+      timeout: 2s
+      retries: 10
     depends_on:
-      - nameserver
-      - dispatcher
+      nameserver:
+        condition: service_healthy
+      dispatcher:
+        condition: service_healthy
 
   worker5:
     image: "worker"
@@ -112,9 +154,16 @@ services:
     command: ["floor", "0.0.0.0:50057", "nameserver:50051", "floor:50057"]
     restart: no
     # Start workers when nameserver and dispatcher are already running
+    healthcheck:
+      test: [ "CMD", "sh", "-c", "nc -z localhost 50057" ]
+      interval: 2s
+      timeout: 2s
+      retries: 10
     depends_on:
-      - nameserver
-      - dispatcher
+      nameserver:
+        condition: service_healthy
+      dispatcher:
+        condition: service_healthy
 
   worker6:
     image: "worker"
@@ -129,9 +178,130 @@ services:
     command: ["softmax", "0.0.0.0:50058", "nameserver:50051", "softmax:50058"]
     restart: no
     # Start workers when nameserver and dispatcher are already running
+    healthcheck:
+      test: [ "CMD", "sh", "-c", "nc -z localhost 50058" ]
+      interval: 2s
+      timeout: 2s
+      retries: 10
     depends_on:
-      - nameserver
-      - dispatcher
+      nameserver:
+        condition: service_healthy
+      dispatcher:
+        condition: service_healthy
+
+  client1:
+    image: "client"
+    pull_policy: never
+    container_name: "sum-client"
+    networks:
+      - verteilte-systeme
+    volumes:
+      - shared:/logs
+    restart: no
+    command: ["sum", "10", "20", "30", "--name_service_address", "nameserver:50051"]
+    # Start client for task sum only when worker for task sum is running
+    depends_on:
+      nameserver:
+        condition: service_healthy
+      dispatcher:
+        condition: service_healthy
+      worker1:
+        condition: service_healthy
+
+  client2:
+    image: "client"
+    pull_policy: never
+    container_name: "hash-client"
+    networks:
+      - verteilte-systeme
+    volumes:
+      - shared:/logs
+    restart: no
+    command: ["hash", "Hello World", "--name_service_address", "nameserver:50051"]
+    # Start client for task sum only when worker for task sum is running
+    depends_on:
+      nameserver:
+        condition: service_healthy
+      dispatcher:
+        condition: service_healthy
+      worker2:
+        condition: service_healthy
+
+  client3:
+    image: "client"
+    pull_policy: never
+    container_name: "reverse-client"
+    networks:
+      - verteilte-systeme
+    volumes:
+      - shared:/logs
+    restart: no
+    command: [ "reverse", "Hello", "World", "--name_service_address", "nameserver:50051" ]
+    # Start client for task sum only when worker for task sum is running
+    depends_on:
+      nameserver:
+        condition: service_healthy
+      dispatcher:
+        condition: service_healthy
+      worker3:
+        condition: service_healthy
+
+  client4:
+    image: "client"
+    pull_policy: never
+    container_name: "strlen-client"
+    networks:
+      - verteilte-systeme
+    volumes:
+      - shared:/logs
+    restart: no
+    command: ["strlen", "Hello", "World", "--name_service_address", "nameserver:50051"]
+    # Start client for task sum only when worker for task sum is running
+    depends_on:
+      nameserver:
+        condition: service_healthy
+      dispatcher:
+        condition: service_healthy
+      worker4:
+        condition: service_healthy
+
+  client5:
+    image: "client"
+    pull_policy: never
+    container_name: "floor-client"
+    networks:
+      - verteilte-systeme
+    volumes:
+      - shared:/logs
+    restart: no
+    command: ["floor", "1.5", "2.5", "3.5", "--name_service_address", "nameserver:50051"]
+    # Start client for task sum only when worker for task sum is running
+    depends_on:
+      nameserver:
+        condition: service_healthy
+      dispatcher:
+        condition: service_healthy
+      worker5:
+        condition: service_healthy
+
+  client6:
+    image: "client"
+    pull_policy: never
+    container_name: "softmax-client"
+    networks:
+      - verteilte-systeme
+    volumes:
+      - shared:/logs
+    restart: no
+    command: ["softmax", "1.2", "0.6", "0.2", "--name_service_address", "nameserver:50051"]
+    # Start client for task sum only when worker for task sum is running
+    depends_on:
+      nameserver:
+        condition: service_healthy
+      dispatcher:
+        condition: service_healthy
+      worker6:
+        condition: service_healthy
 
 volumes:
   shared:
