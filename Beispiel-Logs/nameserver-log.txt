@@ -1,0 +1,26 @@
+INFO:root:Started NameServer, waiting for connections.
+INFO:nameserver:The service worker dispatcher:50052 with the type dispatcher has been registered.
+INFO:nameserver:The service worker reverse:50055 with the type reverse has been registered.
+INFO:nameserver:The service worker sum:50053 with the type sum has been registered.
+INFO:nameserver:The service worker hash:50054 with the type hash has been registered.
+INFO:nameserver:The service worker softmax:50058 with the type softmax has been registered.
+INFO:nameserver:The service worker floor:50057 with the type floor has been registered.
+INFO:nameserver:The service worker strlen:50056 with the type strlen has been registered.
+INFO:nameserver:The address for the service worker of type dispatcher has been requested.
+INFO:nameserver:The address for the service worker of type reverse has been requested.
+INFO:nameserver:The address for the service worker of type dispatcher has been requested.
+INFO:nameserver:The address for the service worker of type dispatcher has been requested.
+INFO:nameserver:The address for the service worker of type dispatcher has been requested.
+INFO:nameserver:The address for the service worker of type hash has been requested.
+INFO:nameserver:The address for the service worker of type dispatcher has been requested.
+INFO:nameserver:The address for the service worker of type sum has been requested.
+INFO:nameserver:The address for the service worker of type dispatcher has been requested.
+INFO:nameserver:The address for the service worker of type dispatcher has been requested.
+INFO:nameserver:The address for the service worker of type softmax has been requested.
+INFO:nameserver:The address for the service worker of type dispatcher has been requested.
+INFO:nameserver:The address for the service worker of type dispatcher has been requested.
+INFO:nameserver:The address for the service worker of type floor has been requested.
+INFO:nameserver:The address for the service worker of type dispatcher has been requested.
+INFO:nameserver:The address for the service worker of type dispatcher has been requested.
+INFO:nameserver:The address for the service worker of type strlen has been requested.
+INFO:nameserver:The address for the service worker of type dispatcher has been requested.

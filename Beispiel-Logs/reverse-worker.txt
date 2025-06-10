@@ -1,0 +1,5 @@
+INFO:worker_reverse:Started worker with task type reverse
+INFO:worker_reverse:Registered self with address reverse:50055 and name reverse at the name server
+INFO:root:Started worker with type reverse, waiting for connections.
+INFO:worker_reverse:Execution of task with ID 1 was requested
+INFO:worker_reverse:Sent task result to dispatcher

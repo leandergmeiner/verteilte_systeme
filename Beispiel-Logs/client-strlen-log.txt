@@ -1,0 +1,2 @@
+DEBUG:client:Executing command strlen with args ('Hello', 'World').
+INFO:client:Result: 5 5

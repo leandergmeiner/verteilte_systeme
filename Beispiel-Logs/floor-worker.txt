@@ -1,0 +1,5 @@
+INFO:worker_floor:Started worker with task type floor
+INFO:worker_floor:Registered self with address floor:50057 and name floor at the name server
+INFO:root:Started worker with type floor, waiting for connections.
+INFO:worker_floor:Execution of task with ID 5 was requested
+INFO:worker_floor:Sent task result to dispatcher

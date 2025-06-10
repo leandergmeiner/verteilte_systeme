@@ -1,0 +1,2 @@
+DEBUG:client:Executing command hash with args ('Hello World',).
+INFO:client:Result: b10a8db164e0754105b7a99be72e3fe5

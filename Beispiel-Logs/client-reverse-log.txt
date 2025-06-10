@@ -1,0 +1,2 @@
+DEBUG:client:Executing command reverse with args ('Hello', 'World').
+INFO:client:Result: olleH dlroW

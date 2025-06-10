@@ -1,0 +1,5 @@
+INFO:worker_softmax:Started worker with task type softmax
+INFO:worker_softmax:Registered self with address softmax:50058 and name softmax at the name server
+INFO:root:Started worker with type softmax, waiting for connections.
+INFO:worker_softmax:Execution of task with ID 4 was requested
+INFO:worker_softmax:Sent task result to dispatcher

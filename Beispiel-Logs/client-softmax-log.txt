@@ -1,0 +1,2 @@
+DEBUG:client:Executing command softmax with args ('1.2', '0.6', '0.2').
+INFO:client:Result: 0.5217324856683184 0.286332859063033 0.19193465526864853

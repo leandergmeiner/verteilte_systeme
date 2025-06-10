@@ -1,0 +1,5 @@
+INFO:worker_strlen:Started worker with task type strlen
+INFO:worker_strlen:Registered self with address strlen:50056 and name strlen at the name server
+INFO:root:Started worker with type strlen, waiting for connections.
+INFO:worker_strlen:Execution of task with ID 6 was requested
+INFO:worker_strlen:Sent task result to dispatcher
