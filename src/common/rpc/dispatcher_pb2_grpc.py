@@ -76,7 +76,7 @@ class DispatchServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def delete_task_result(self, request, context):
-        """CLIENT -> DISPATCHER: Client requests result from Dispatcher for task
+        """CLIENT -> DISPATCHER: The client requests the deletion of the task result
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
