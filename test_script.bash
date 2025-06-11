@@ -3,6 +3,9 @@
 log_file=log.txt
 rm -f "$log_file"
 
+rm -r logs
+mkdir logs
+
 # Start processes
 poetry run python -u main.py nameserver >> "$log_file" 2>&1 &
 name_server_pid=$!
@@ -37,7 +40,7 @@ function client_test_task() {
     shift
     args=("$@")
     r=$(poetry run python main.py exec "$task" "${args[@]}")
-    echo "Result for task $task with args ( $(printf "'%s' " "${args[@]}") ): $r"
+    echo $r
 }
 
 # Client interaction

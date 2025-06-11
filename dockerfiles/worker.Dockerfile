@@ -22,7 +22,7 @@ RUN pip3 install --no-cache-dir poetry
 
 RUN poetry install
 
-ENTRYPOINT ["poetry", "run", "python3", "main.py", "worker"]
+ENTRYPOINT ["poetry", "run", "python3", "main.py", "worker", "--log_dir=/logs/"]
 
 # Default arguments
 CMD ["sum", "0.0.0.0:50053", "nameserver:50051", "sum:50053"]

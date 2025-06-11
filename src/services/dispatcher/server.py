@@ -1,6 +1,8 @@
 import logging
 import os
+import sys
 from concurrent import futures
+from pathlib import Path
 
 import grpc
 
@@ -12,17 +14,17 @@ logger = logging.getLogger()
 def create_server(
     name_server_address: str | None = "0.0.0.0:50051",
     server_address: str = "0.0.0.0:50052",
-    registered_server_address: str = "", # Server address given to the nameserver during registration
+    registered_server_address: str = "",  # Server address given to the nameserver during registration
+    log_dir: str = None,
 ):
-    log_file = "/logs/dispatcher-log.txt"
+    log_dir = log_dir or "logs"
+    log_file = Path(log_dir, "dispatcher-log.txt")
     # Delete old logs
     if os.path.exists(log_file):
         os.remove(log_file)
 
-    logging.basicConfig(level=logging.INFO,
-                        filename=log_file,
-                        filemode="a",
-                        )
+    logging.basicConfig(level=logging.INFO, filename=log_file, filemode="a")
+    logger.addHandler(logging.StreamHandler(sys.stdout))
 
     name_server_address = name_server_address or os.environ.get("NAME_SERVICE")
 
@@ -44,4 +46,4 @@ def create_server(
         server.wait_for_termination()
     except KeyboardInterrupt:
         logger.info("Keyboard interrupt, shutting down ...")
-        server.stop(1.)
+        server.stop(1.0)
