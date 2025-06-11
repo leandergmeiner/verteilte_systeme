@@ -87,6 +87,13 @@ service Worker {
 - **Worker::get_status**: Bei einem zustandshaften Worker, kann diese Prozedur aktuelle Informationen über den Zustand des Workers liefern. Bei uns wird diese Methode auch genutzt, um dem Nutzer Informationen über die Nutzung des Workers zu liefern (bspw. die erwarteten Argumente).
 
 ## Build Prozess
+Für den Build-Prozess muss zuerst das Python Virutal Environment aktiviert werden. Dazu sollte am besten der Python Package Manager [Poetry](https://python-poetry.org/) verwendet werden.
+Das Environment kann mit
+```shell
+eval $(poetry env activate)
+```
+aktiviert werden.
+
 
 Um die RPC-Schnittstellen zu generieren muss der Befehl `make` im Root-Verzeichnis des Projektes ausgeführt werden.
   
