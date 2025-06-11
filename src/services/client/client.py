@@ -1,5 +1,7 @@
 import logging
 import os
+import sys
+from pathlib import Path
 
 import grpc
 from google.protobuf import empty_pb2, wrappers_pb2
@@ -15,6 +17,7 @@ from src.services import DISPATCHER_NAME
 
 logger = logging.getLogger("client")
 
+
 def get_servicer_address(name_service_address: str, service_type: str):
     with grpc.insecure_channel(name_service_address) as channel:
         try:
@@ -29,16 +32,20 @@ def get_servicer_address(name_service_address: str, service_type: str):
             raise KeyError("Dispatcher service could not be found")
 
 
-def execute_command(command: str, *args: str, name_service_address: str = "localhost:50051"):
-    log_file = f"/logs/client-{command}-log.txt"
+def execute_command(
+    command: str,
+    *args: str,
+    name_service_address: str = "localhost:50051",
+    log_dir: str = None,
+):
+    log_dir = log_dir or "logs"
+    log_file = Path(log_dir, f"client-{command}-log.txt")
     # Delete old logs
     if os.path.exists(log_file):
         os.remove(log_file)
 
-    logging.basicConfig(level=logging.DEBUG,
-                        filename=log_file,
-                        filemode="a",
-                        )
+    logging.basicConfig(level=logging.DEBUG, filename=log_file, filemode="a")
+    logger.addHandler(logging.StreamHandler(sys.stdout))
 
     args = tuple(map(str, args))
     logger.debug("Executing command %s with args %s.", command, args)
@@ -55,7 +62,7 @@ def execute_command(command: str, *args: str, name_service_address: str = "local
         while True:  # Poll for results
             try:
                 results: common_pb2.TaskResult = stub.get_task_result(task_id)
-                
+
                 if results.valid:
                     logger.info("Execution of task failed.")
                 else:
@@ -74,6 +81,7 @@ def execute_command(command: str, *args: str, name_service_address: str = "local
                     return
 
         _ = stub.delete_task_result(task_id)
+
 
 def worker_help(command: str, name_service_address: str = "localhost:50051"):
     worker_address = get_servicer_address(name_service_address, command)
