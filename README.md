@@ -94,6 +94,7 @@ eval $(poetry env activate)
 ```
 aktiviert werden.
 
+Dann müssen die benötigten Dependencies mit `poetry install` installiert werden.
 
 Um die RPC-Schnittstellen zu generieren muss der Befehl `make` im Root-Verzeichnis des Projektes ausgeführt werden.
   
